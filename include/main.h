@@ -49,8 +49,10 @@
 #include "Template/pure-pursuit/custom-math.h"
 #include "Template/drive.h"
 #include "Template/pure-pursuit/parse-point-data.h"
+#include "intake.h"
 
 #include "autons.h"
+#include "auton-routines.h"
 #include "robot-config.h"
 
 

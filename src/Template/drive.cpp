@@ -408,6 +408,10 @@ void Drive::wall_distance(WallSide direction, float distance, float heading, flo
     // if(fabs(wall_distance_error)>200) wall_distance_error=0;
     float wall_dist_output = wall_PID.compute(wall_distance_error);
 
+    if(direction == WallSide::RIGHT){
+      wall_dist_output = -wall_dist_output;
+    }
+
     drive_output = clamp(drive_output, -drive_max_voltage, drive_max_voltage);
     heading_output = clamp(heading_output, -heading_max_voltage, heading_max_voltage);
     wall_dist_output = clamp(wall_dist_output, -wall_max_voltage, wall_max_voltage);

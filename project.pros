@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "JAR_but_pros",
+    "project_name": "Worlds Skills",
     "target": "v5",
     "templates": {
       "kernel": {
@@ -592,8 +592,8 @@
       }
     },
     "upload_options": {
-      "description": "Simple PROS template inspired by JAR Template. ",
-      "icon": "X",
+      "description": "Let's do this. ",
+      "icon": "planet",
       "slot": 3
     },
     "use_early_access": false
