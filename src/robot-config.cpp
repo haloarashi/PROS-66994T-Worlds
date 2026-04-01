@@ -108,7 +108,7 @@ lemlib::OdomSensors sensors(
     &inertial // inertial sensor
 );
 
-// lateral PID controller
+// lateral PID controller. Only slew is used in Pure Pursuit. 
 lemlib::ControllerSettings lateral_controller(
     chassis.drive_kp, // proportional gain (kP)
     chassis.drive_ki, // integral gain (kI)
@@ -118,10 +118,10 @@ lemlib::ControllerSettings lateral_controller(
     100000000000, // small error range timeout, in milliseconds // lemlib default is 100
     chassis.drive_settle_error, // large error range, in inches
     chassis.drive_settle_time, // large error range timeout, in milliseconds 
-    20 // maximum acceleration (slew)
+    0 // maximum acceleration (slew) // TODO: tune this if necessary
 );
 
-// angular PID controller
+// angular PID controller. Not used in Pure Pursuit. 
 lemlib::ControllerSettings angular_controller(
     chassis.turn_kp, // proportional gain (kP)
     chassis.turn_ki, // integral gain (kI)
