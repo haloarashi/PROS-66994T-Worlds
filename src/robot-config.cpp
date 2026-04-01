@@ -146,7 +146,7 @@ lemlib::Chassis chassis_lemlib(
 void init() {
     delay(2500); // wait for imu to calibrate
     // chassis_lemlib.calibrate(); // TODO: THIS MIGHT BE NEEDED FOR LEMLIB TO WORK! But if this is called, the DriveR.get_position() and DriveL.get_position() units become not degrees anymore for some reason, which breaks my odometry. 
-    static Task screen_task(simple_screen_task); // This must be called in competition_initialize() or later. Calling this in initialize() doesn't work. 
+    static Task screen_task([]() {simple_screen_task(false);}); // This must be called in competition_initialize() or later. Calling this in initialize() doesn't work. 
     // static Task screen_task(map_task);
     // Controller(CONTROLLER_MASTER).rumble("..");
 

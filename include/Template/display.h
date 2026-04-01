@@ -2,7 +2,7 @@
 #include "main.h"
 using namespace pros;
 
-void simple_screen_task();
+void simple_screen_task(bool rainbow);
 
 void print_curvepoints(std::vector<CurvePoint> points);
 void print_point(Point point, int line);
