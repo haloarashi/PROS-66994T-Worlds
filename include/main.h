@@ -40,6 +40,7 @@
  * You should add more #includes here
  */
 //#include "okapi/api.hpp"
+#include "lemlib/api.hpp"
 #include "Template/odom.h"
 #include "Template/PID.h"
 #include "Template/pure-pursuit/point.h"
