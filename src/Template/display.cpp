@@ -101,6 +101,7 @@ void simple_screen_task(){
     }
     
 		pros::screen::print(TEXT_MEDIUM, 1, "X: %.2f,  Y: %.2f, Heading: %.2f", chassis.get_X_position(), chassis.get_Y_position(), chassis.get_absolute_heading());
+    pros::screen::print(TEXT_MEDIUM, 2, "Drive L pos: %.2f, Drive R pos: %.2f", chassis.DriveL.get_position(), chassis.DriveR.get_position());
 		// pros::screen::print(TEXT_MEDIUM, 2, "Intake temp: down %.2f, mid %.2f, up %.2f", intake_down.get_temperature(), intake_mid.get_temperature(), intake_up.get_temperature());
 		pros::screen::print(TEXT_MEDIUM, 3, "DT L temp: %.2f, %.2f, %.2f", chassis.DriveL.get_temperature(0), chassis.DriveL.get_temperature(1), chassis.DriveL.get_temperature(2));
 		pros::screen::print(TEXT_MEDIUM, 4, "DT R temp: %.2f, %.2f, %.2f", chassis.DriveR.get_temperature(0), chassis.DriveR.get_temperature(1), chassis.DriveR.get_temperature(2));

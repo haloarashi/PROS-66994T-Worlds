@@ -76,12 +76,11 @@ Drive chassis(
 
 void default_constants(){
   // Each constant set is in the form of (maxVoltage, kP, kI, kD, startI).
-  chassis.set_drive_constants(127, 4.7625, 0, 21.167, 0, 0); // max 127
-  chassis.set_heading_constants(64, 7, 0, 20, 0); 
-  chassis.set_turn_constants(105.833333, 2.54, .105833333, 17.4625, 15.0); // max 105
-  chassis.set_swing_constants(116.4166667, 3.704166667, 0.08466667, 21.1666667, 15);
-  chassis.set_wall_constants(127, 0.449791666666667, 0, 0, 0);
-  //chassis.set_drive_min_constants(12, 1.45, 0, 2, 0, 1.5);
+  chassis.set_drive_constants(127, 5.29167, 0, 21.167, 0, 0); // max 127
+  chassis.set_heading_constants(64, 2.54, 0, 10.583, 0); 
+  chassis.set_turn_constants(106, 2.38125, .10583, 17.4625, 15.0); // max 105
+  chassis.set_swing_constants(116, 3.704166667, 0.08466667, 21.1666667, 15);
+  chassis.set_wall_constants(85, 0.44979167, 0, 0, 0);
 
   // Each exit condition set is in the form of (settle_error, settle_time, timeout).
   chassis.set_drive_exit_conditions(1.8, 50, 3000);
@@ -145,10 +144,10 @@ lemlib::Chassis chassis_lemlib(
 // Lemlib Stuff ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 void init() {
-    // delay(2500); // wait for imu to calibrate
+    delay(2500); // wait for imu to calibrate
+    // chassis_lemlib.calibrate(); // TODO: THIS MIGHT BE NEEDED FOR LEMLIB TO WORK! But if this is called, the DriveR.get_position() and DriveL.get_position() units become not degrees anymore for some reason, which breaks my odometry. 
     static Task screen_task(simple_screen_task); // This must be called in competition_initialize() or later. Calling this in initialize() doesn't work. 
     // static Task screen_task(map_task);
     // Controller(CONTROLLER_MASTER).rumble("..");
 
-    chassis_lemlib.calibrate();
 }

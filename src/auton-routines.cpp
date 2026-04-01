@@ -12,20 +12,18 @@ void skills_init(){
 }
 
 void skills_115(){
-    // odomlift.set_value(true);
-    // skills_init();
+    // chassis.set_coordinates(0, 0, 180);
+    // set_coordinates_start(false, false);
 
-    // sideways_parking_zone(true, true);
-    chassis.set_coordinates(0, 0, 180);
-    set_coordinates_start(false, false);
-    // chassis.turn_to_point(50, 90); // center block
-    // chassis.drive_to_point(50, 90); // center block
+    sideways_parking_zone(true, true);
+    chassis.turn_to_point(50, 90); // center block
+    chassis.drive_to_point(50, 90); // center block
 
-    // one_center_block_then_score(true, true);
+    one_center_block_then_score(true, true);
 
-    // ball_clump(true);
+    ball_clump(true);
     default_constants();
-    chassis.drive_distance(32.5);
+    // chassis.drive_distance(32.5);
     // chassis.turn_to_point(29.804, 24);
     // chassis.turn_to_point(chassis.get_X_position(), 24);
     // shovel.set_value(false);

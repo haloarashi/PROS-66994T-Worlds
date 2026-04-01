@@ -15,13 +15,13 @@ void competition_initialize() {
 	claw.set_value(true);
 }
 
-ASSET(example_txt);
+ASSET(curveLeft_txt);
 
 void autonomous() {
 	chassis.set_coordinates(0, 0, 0);
 	skills_init();
-	chassis_lemlib.follow(example_txt, 15, 1000000);
 	// skills_115();
+	square();
 }
 
 void opcontrol() {
