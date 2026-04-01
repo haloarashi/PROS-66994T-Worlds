@@ -471,6 +471,8 @@ void Drive::set_coordinates(float X_position, float Y_position, float orientatio
     delete odom_task;      // free memory
   }
   odom_task = new Task(position_track_task);
+
+  chassis_lemlib.setPose(X_position, Y_position, to_rad(orientation_deg));
 }
 
 /**

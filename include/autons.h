@@ -1,7 +1,6 @@
 class Drive;
 extern Drive chassis;
 
-void default_constants();
 void square();
 
 // Created during Skills 114 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv

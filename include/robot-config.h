@@ -24,6 +24,13 @@ extern adi::DigitalOut outtake_lift;
 extern Distance distance_sensorL;
 extern Distance distance_sensorR;
 
+extern lemlib::Drivetrain drivetrain;
+extern lemlib::OdomSensors sensors;
+extern lemlib::ControllerSettings lateral_controller;
+extern lemlib::ControllerSettings angular_controller;
+extern lemlib::Chassis chassis_lemlib;
+
+void default_constants();
 void init();
 
 // Your motors, sensors, etc. should go here.  Below are examples
