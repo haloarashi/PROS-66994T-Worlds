@@ -121,16 +121,7 @@ void skills_115(){
     exit_somewhere_skills(true, 200, false);
     intake_task = IntakeTask::LONG_GOAL_OUT;
     
-    // // park
-    default_constants();
-    chassis.turn_to_angle(180);
-    intake_task = IntakeTask::LONG_GOAL_OUT;
-    chassis.drive_to_point(chassis.get_X_position(), 67);
-    intake_task = IntakeTask::LONG_GOAL_OUT;
-    chassis.turn_to_angle(270);
-    intake_task = IntakeTask::LONG_GOAL_OUT;
-    chassis.drive_with_voltage(127, 127);
-    intake_task = IntakeTask::LONG_GOAL_OUT;
+    fwd_park();
 
     // // ------------------------------------------------------------------
     // chassis.turn_to_point(12, 106);

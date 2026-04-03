@@ -112,7 +112,7 @@ void set_coordinates_start(bool left, bool face_north){
 }
 
 int progress = 0;
-void sideways_parking_zone_tracking_task(void* blue){ // TODO: finish this function
+void sideways_parking_zone_tracking_task(void* blue){
     bool blue_bool = (bool)blue;
     progress = 0;
     int timer = 0;
@@ -471,12 +471,6 @@ void go_to_other_end_of_long_goal(bool target_is_left, bool north){
     chassis.turn_to_angle(target_is_left? 270 : 90);
 }
 
-/*
-goal type: 
-    2 = long goal
-    3 = center low goal
-    4 = center high goal
-*/
 void score_long_goal(bool left, bool north, bool far){
     double x_goal = left? 40 : 100;
     double y = north? 116.97 : 22.5;
@@ -521,6 +515,18 @@ void park(){
     chassis.drive_to_point(8, 30);
     chassis.turn_to_point(8, 70.2, 180);
     chassis.drive_to_point(8, 70.2);
+}
+
+void fwd_park(){
+    default_constants();
+    chassis.turn_to_angle(180);
+    intake_task = IntakeTask::LONG_GOAL_OUT;
+    chassis.drive_to_point(chassis.get_X_position(), 67);
+    intake_task = IntakeTask::LONG_GOAL_OUT;
+    chassis.turn_to_angle(270);
+    intake_task = IntakeTask::LONG_GOAL_OUT;
+    chassis.drive_with_voltage(127, 127);
+    intake_task = IntakeTask::LONG_GOAL_OUT;
 }
 
 /* @param corner

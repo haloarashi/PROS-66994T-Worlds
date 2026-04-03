@@ -19,17 +19,12 @@ extern int progress;
 int longgoal();
 
 void park();
+void fwd_park();
 
 void loader(bool left, bool north, bool keep_intake_running = true);
 void get_loader(bool wall_is_left, double dist_from_loader = 0);
 void set_coordinates_start(bool left, bool face_north);
 
-/*
-goal type: 
-    2 = long goal
-    3 = center low goal
-    4 = center high goal
-*/
 void score_goal(int time, IntakeTask goal_type);
 void score_long_goal(bool left, bool north, bool far);
 void go_to_other_end_of_long_goal(bool target_is_left, bool north);
