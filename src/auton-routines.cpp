@@ -158,7 +158,7 @@ void skills_115(){
     // int voltage = 85;
     // chassis.set_coordinates(0, 0, chassis.get_absolute_heading());
     // odomlift.set_value(true);
-    // intake_task = IntakeTask::INTAKE;
+    // intake_task = 1;
     // chassis.drive_with_voltage(voltage, voltage);
     // // delay(500);
     // wait_until([](){return progress >= 3;}, 5, 3000);
@@ -188,7 +188,7 @@ double measure_tracking_wheel_width()
         // controller(primary).Screen.print(chassis.get_absolute_heading());
         delay(10);
     }
-    chassis.drive_stop(MotorBrake:);
+    chassis.drive_stop(MotorBrake::hold);
     outtake.brake();
 
     double delta_straight = chassis.get_ForwardTracker_position();
