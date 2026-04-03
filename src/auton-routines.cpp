@@ -51,8 +51,8 @@ void skills_115(){
     score_long_goal(false, false, false);
     delay(1000); // this is too long if we're also doing lower goal
     exit_somewhere_skills(true, 150, false);
-    intake_task = 2;
-    // intake_task = 2; // remove all blocks from robot for parking zone
+    intake_task = IntakeTask::LONG_GOAL_OUT;
+    // intake_task = IntakeTask::LONG_GOAL_OUT; // remove all blocks from robot for parking zone
 
     // // ^^^^ first half done ^^^^
 
@@ -78,7 +78,7 @@ void skills_115(){
     // // ^^^^^^^^ blue parking zone ^^^^^^^^^^^
 
     // one_center_block_then_score(false, true);
-    // intake_task = 2;
+    // intake_task = IntakeTask::LONG_GOAL_OUT;
     
     // chassis.set_coordinates(chassis.get_X_position(), chassis.get_Y_position() + 7, chassis.get_absolute_heading());
     chassis.turn_to_point(110.596, 117);
@@ -86,7 +86,7 @@ void skills_115(){
     shovel.set_value(false);
 
     // only needed if not doing lower goal vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-    // intake_task = 2;
+    // intake_task = IntakeTask::LONG_GOAL_OUT;
 
     // chassis.drive_to_point(110.596, 117);
     // chassis.turn_to_angle(90);
@@ -119,18 +119,18 @@ void skills_115(){
     score_long_goal(true, true, true);
     delay(1000); // this is too long if we're also doing lower goal
     exit_somewhere_skills(true, 200, false);
-    intake_task = 2;
+    intake_task = IntakeTask::LONG_GOAL_OUT;
     
     // // park
     default_constants();
     chassis.turn_to_angle(180);
-    intake_task = 2;
+    intake_task = IntakeTask::LONG_GOAL_OUT;
     chassis.drive_to_point(chassis.get_X_position(), 67);
-    intake_task = 2;
+    intake_task = IntakeTask::LONG_GOAL_OUT;
     chassis.turn_to_angle(270);
-    intake_task = 2;
+    intake_task = IntakeTask::LONG_GOAL_OUT;
     chassis.drive_with_voltage(127, 127);
-    intake_task = 2;
+    intake_task = IntakeTask::LONG_GOAL_OUT;
 
     // // ------------------------------------------------------------------
     // chassis.turn_to_point(12, 106);
@@ -158,7 +158,7 @@ void skills_115(){
     // int voltage = 85;
     // chassis.set_coordinates(0, 0, chassis.get_absolute_heading());
     // odomlift.set_value(true);
-    // intake_task = 1;
+    // intake_task = IntakeTask::INTAKE;
     // chassis.drive_with_voltage(voltage, voltage);
     // // delay(500);
     // wait_until([](){return progress >= 3;}, 5, 3000);

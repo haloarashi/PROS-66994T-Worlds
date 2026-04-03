@@ -30,7 +30,7 @@ goal type:
     3 = center low goal
     4 = center high goal
 */
-void score_goal(int time, int goal_type);
+void score_goal(int time, IntakeTask goal_type);
 void score_long_goal(bool left, bool north, bool far);
 void go_to_other_end_of_long_goal(bool target_is_left, bool north);
 void exit_somewhere_skills(bool drive_fwd, int time, bool reset_intake = true);
