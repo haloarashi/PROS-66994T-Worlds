@@ -114,8 +114,7 @@ class Drive{
         void set_drive_exit_conditions(float drive_settle_error, float drive_settle_time, float drive_timeout);
         void set_swing_exit_conditions(float swing_settle_error, float swing_settle_time, float swing_timeout);
 
-        void turn_to_angle(float angle);
-        void turn_to_angle(float angle, float turn_max_voltage);
+        void turn_to_angle(float angle, float extra_angle_deg = 0);
         void turn_to_angle(float angle, float turn_max_voltage, float turn_settle_error, float turn_settle_time, float turn_timeout);
         void turn_to_angle(float angle, float turn_max_voltage, float turn_settle_error, float turn_settle_time, float turn_timeout, float turn_kp, float turn_ki, float turn_kd, float turn_starti);
 

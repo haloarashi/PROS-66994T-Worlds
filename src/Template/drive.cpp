@@ -233,14 +233,11 @@ void Drive::drive_stop(MotorBrake mode){
  * current heading of the robot.
  * 
  * @param angle Desired angle in degrees.
+ * @param extra_angle_deg Additional angle to add to the desired angle.
  */
 
-void Drive::turn_to_angle(float angle){
-  turn_to_angle(angle, turn_max_voltage, turn_settle_error, turn_settle_time, turn_timeout, turn_kp, turn_ki, turn_kd, turn_starti);
-}
-
-void Drive::turn_to_angle(float angle, float turn_max_voltage){
-  turn_to_angle(angle, turn_max_voltage, turn_settle_error, turn_settle_time, turn_timeout, turn_kp, turn_ki, turn_kd, turn_starti);
+void Drive::turn_to_angle(float angle, float extra_angle_deg){
+  turn_to_angle(angle + extra_angle_deg, turn_max_voltage, turn_settle_error, turn_settle_time, turn_timeout, turn_kp, turn_ki, turn_kd, turn_starti);
 }
 
 void Drive::turn_to_angle(float angle, float turn_max_voltage, float turn_settle_error, float turn_settle_time, float turn_timeout){

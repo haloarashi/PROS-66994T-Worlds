@@ -16,9 +16,8 @@ void skills_115(){
     // set_coordinates_start(false, false);
 
     sideways_parking_zone(true, true);
-    chassis.turn_to_point(50, 90); // center block
-    chassis.drive_to_point(50, 90); // center block
-
+    chassis.drive_with_voltage(127, 127);
+    delay(200);
     one_center_block_then_score(true, true);
 
     ball_clump(true);
@@ -189,7 +188,8 @@ double measure_tracking_wheel_width()
         // controller(primary).Screen.print(chassis.get_absolute_heading());
         delay(10);
     }
-    chassis.drive_stop(MotorBrake::brake);
+    chassis.drive_stop(MotorBrake:);
+    outtake.brake();
 
     double delta_straight = chassis.get_ForwardTracker_position();
     double delta_side = chassis.get_SidewaysTracker_position(); 

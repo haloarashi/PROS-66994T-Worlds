@@ -104,7 +104,7 @@ void Drive::go_to_point(Point robot_pos, CurvePoint follow_me){
     //     targetRightVel /= ratio;
     // }
     
-    printf("last_found_index: %d, curvature: %.2f, targetLeftVel: %.2f, targetRightVel: %.2f\n", last_found_index, curvature, targetLeftVel, targetRightVel);
+    // printf("last_found_index: %d, curvature: %.2f, targetLeftVel: %.2f, targetRightVel: %.2f\n", last_found_index, curvature, targetLeftVel, targetRightVel);
     
     chassis.drive_with_voltage(targetLeftVel, targetRightVel);
 }

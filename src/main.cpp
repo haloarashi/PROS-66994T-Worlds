@@ -4,9 +4,6 @@ void initialize() {
 }
 
 void disabled() {
-	// chassis.set_coordinates(chassis.get_X_position(), chassis.get_Y_position(), chassis.get_absolute_heading());
-	// chassis.set_coordinates(cm_to_inch(-124.753),cm_to_inch(39.548), 0);
-	chassis.set_coordinates(0, 0, 0);
 }
 
 
@@ -19,12 +16,14 @@ ASSET(curveLeft_txt);
 
 void autonomous() {
 	chassis.set_coordinates(0, 0, 0);
+    inertial.tare_euler(); // idk the difference between this and inertial.tare(). Both works. Does not work if called in competition_initialize() for some reason. 
 	skills_init();
-	// skills_115();
-	square();
+	skills_115();
+	// chassis.drive_stop(MotorBrake::brake);
 }
 
 void opcontrol() {
+	inertial.tare_euler(); // idk the difference between this and inertial.tare(). Both works. Does not work if called in competition_initialize() for some reason. 
 	while (true) {
 		claw.set_value(false);
 		chassis.control_arcade();

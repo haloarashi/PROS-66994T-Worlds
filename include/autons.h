@@ -1,7 +1,7 @@
 class Drive;
 extern Drive chassis;
 
-void square();
+void square(float side_length);
 
 // Created during Skills 114 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 

@@ -2,9 +2,9 @@
 
 int intake_task;
 
-void square(){
+void square(float side_length){ // The effective side length of one tile is a little under 23.75 inches. The "little" is kinda negligible. 
     chassis.set_coordinates(0, 0, 0);
-    chassis.drive_to_point(0, 48);
+    chassis.drive_to_point(0, side_length);
     // chassis.DriveL.set_brake_mode_all(MotorBrake::brake);
     // chassis.DriveR.set_brake_mode_all(MotorBrake::brake);
     // chassis.DriveL.brake();
@@ -25,9 +25,9 @@ void square(){
         break;
     }
     chassis.turn_to_angle(90);
-    chassis.drive_to_point(48, 48);
+    chassis.drive_to_point(side_length, side_length);
     chassis.turn_to_angle(180);
-    chassis.drive_to_point(48, 0);
+    chassis.drive_to_point(side_length, 0);
     chassis.turn_to_angle(270);
     chassis.drive_to_point(0, 0);
     chassis.turn_to_angle(0);
@@ -48,8 +48,9 @@ void red_parking_zone(){  // DONT USE THIS
 }
 
 void sideways_parking_zone(bool left, bool red){
-    int voltage = 85;
-    chassis.set_coordinates(0, 0, left? 0 : chassis.get_absolute_heading());
+    int voltage = 60;
+    bool facing_north = left == red;
+    chassis.set_coordinates(0, 0, facing_north? 0 : 180);
     intake_task = 1;
     chassis.drive_with_voltage(voltage, voltage);
     // delay(500);
@@ -62,41 +63,45 @@ void sideways_parking_zone(bool left, bool red){
     // }
     chassis.drive_stop(MotorBrake::brake);
 
-    chassis.turn_to_angle(0); // change this if coming from the other side
+    chassis.turn_to_angle(facing_north? 0 : 180); // change this if coming from the other side
 
-    chassis.drive_with_voltage(-37, -37);
-    chassis.set_coordinates(0, 0, chassis.get_absolute_heading());
+    chassis.drive_with_voltage(-40, -40);
+    // chassis.set_coordinates(0, 0, chassis.get_absolute_heading());
     delay(500); // delay to ensure robot has started driving backwards
 
-    double prev_pos = chassis.get_Y_position() - 10; // -10 is a random offset to ensure the loop starts
-    while(true){
-        delay(200);
-        double current_pos = chassis.get_Y_position();
-        double threshold = 0.15;
-        if(fabs(current_pos - prev_pos) < threshold){
-            break;
-        }
-        prev_pos = current_pos;
-    }
+    // double prev_pos = chassis.get_Y_position() - 10; // -10 is a random offset to ensure the loop starts
+    // while(true){
+    //     delay(200);
+    //     double current_pos = chassis.get_Y_position();
+    //     double threshold = 0.15;
+    //     if(fabs(current_pos - prev_pos) < threshold){
+    //         break;
+    //     }
+    //     prev_pos = current_pos;
+    // }
+
+    wait_until([](){
+        float avg_torque = (chassis.DriveL.get_torque(0) + chassis.DriveL.get_torque(1) + chassis.DriveL.get_torque(2) 
+                          + chassis.DriveR.get_torque(0) + chassis.DriveR.get_torque(1) + chassis.DriveR.get_torque(2)) / 6.0;
+        return avg_torque > 0.17;
+    }, 10, 3000);
 
     chassis.drive_stop(MotorBrake::hold);
-    set_coordinates_start(left, red);
+    set_coordinates_start(red, facing_north);
 }
 
+float wheelbase = 13.25; // center dist between front and back wheels, in inches.
+float distance_sensorL_offset = 3.25; // distance from left distance sensor to center of robot, in inches. This is a positive number.
+float distance_sensorR_offset = 3.25; // distance from right distance sensor to center of robot, in inches. This is a positive number.
+
 void set_coordinates_start(bool left, bool face_north){
-    double left_dist = mm_to_inch(distance_sensorL.get()) + 5.75;
-    double right_dist = mm_to_inch(distance_sensorR.get()) + 5.25;
+    double left_dist = mm_to_inch(distance_sensorL.get()) + distance_sensorL_offset;
+    double right_dist = mm_to_inch(distance_sensorR.get()) + distance_sensorR_offset;
     double dist = left? left_dist : right_dist;
     double dist_from_wall = fabs(dist * cos(to_rad(chassis.get_absolute_heading())));
-    double new_x;
-    // double new_x = left? dist_from_wall : 140.4 - dist_from_wall;
-    // if(left && face_north || !left && !face_north){
-    //     new_x = 140.4 - dist_from_wall;
-    // }
-    // else{
-        new_x = dist_from_wall;
-    // }
-    chassis.set_coordinates(new_x, face_north? 85.35 : 55.05, chassis.get_absolute_heading());
+    bool red = left == face_north;
+    double new_x = red? dist_from_wall : 140.4 - dist_from_wall;
+    chassis.set_coordinates(new_x, face_north? 70.2 + wheelbase/2 : 70.2 - wheelbase/2, chassis.get_absolute_heading());
     chassis.drive_stop(MotorBrake::brake);
     
     shovel.set_value(false);
@@ -107,26 +112,26 @@ void set_coordinates_start(bool left, bool face_north){
 }
 
 int progress = 0;
-void sideways_parking_zone_tracking_task(void* far){ // TODO: finish this function
-    bool far_bool = (bool)far;
+void sideways_parking_zone_tracking_task(void* blue){ // TODO: finish this function
+    bool blue_bool = (bool)blue;
     progress = 0;
     int timer = 0;
 
-    wait_until_bool(chassis.Gyro.get_pitch() > 6, 10, 0);
+    wait_until_bool(chassis.Gyro.get_roll() < -6, 10, 0);
     progress = 1; // on bump
 
-    wait_until_bool(chassis.Gyro.get_pitch() < -1.5, 10, 0);
+    wait_until_bool(chassis.Gyro.get_roll() > 1.5, 10, 0);
     progress = 2; // descending bump
 
     delay(2000);
     
-    wait_until_bool(chassis.Gyro.get_pitch() > 4.5, 10, 0);
+    wait_until_bool(chassis.Gyro.get_roll() < -4.5, 1, 0);
     progress = 3; // on bump
 
-    wait_until_bool(chassis.Gyro.get_pitch() < -1.5, 10, 0);
+    wait_until_bool(chassis.Gyro.get_roll() > 1.7, 1, 0);
 
-    while(far_bool){
-        if(0 < chassis.Gyro.get_pitch() && chassis.Gyro.get_pitch() < 4){
+    while(blue_bool){
+        if(0 > chassis.Gyro.get_roll() || chassis.Gyro.get_roll() > -4){
             timer += 10;
         }
         else{
@@ -144,26 +149,33 @@ void sideways_parking_zone_tracking_task(void* far){ // TODO: finish this functi
 
 void one_center_block_then_score(bool left, bool north){
     default_constants();
-    // chassis.turn_kp = 3.29;
-    // chassis.turn_to_point(left? 56 : 86, north? 81 : 50);
-    // // chassis.drive_kp = 24.58;
-    // // chassis.drive_settle_time = 90;
-    // chassis.drive_to_point(left? 56 : 86, north? 81 : 55);
     intake_task = 1;
     chassis.turn_to_point(left? 43.5 : 95, north? 92 : 50.4); // center block // 47, 93, 90, 50.4
     // delay(100);
     // chassis.drive_max_voltage = 50;
-    chassis.drive_to_point(left? 43.5 : 95, left? 93 : 90); // center block // 47, 93, 90, 50.4
+    chassis.drive_to_point(left? 43.5 : 95, left? 92 : 50.4); // center block // 47, 93, 90, 50.4
 
     default_constants();
     
-    bool upper = (left && north) || (!left && !north);
+    bool upper = left == north;
 
+    // turn to goal
+    // chassis.turn_to_point(left? 56 : 83.4, north? 83 : 60.4, upper? 180 : 0);
+    if(upper && north){
+        chassis.turn_to_angle(135, 180);
+    }
+    else if(upper && !north){
+        chassis.turn_to_angle(315, 180);
+    }
+    else if(!upper && north){
+        chassis.turn_to_angle(225);
+    }
+    else{
+        chassis.turn_to_angle(45);
+    }
+    
     if(upper){
-        // chassis.turn_to_point(left? 58 : 76, north? 81 : 60, 180); // goal
-        chassis.turn_to_point(left? 56 : 83.4, north? 83 : 60.4, 180); // goal
         // Task upper_task(soloupper);
-        // chassis.drive_to_point(left? 61 : 76, north? 83 : 60);
         chassis.drive_with_voltage(-127, -127);
         delay(100);
         chassis.drive_with_voltage(-45, -45);
@@ -172,11 +184,8 @@ void one_center_block_then_score(bool left, bool north){
         intake_task = 4;
     }
     else{
-        // chassis.turn_kp = 3.25;
-        // chassis.turn_to_angle(45);
-        chassis.turn_to_point(80, 78);
+        // chassis.turn_to_point(80, 78);
         shovel.set_value(false);
-        // chassis.drive_to_point(79, 79);
         // chassis.turn_to_angle(225);
         // Task lower_task(sololower);
         chassis.drive_with_voltage(90, 90);
@@ -526,8 +535,8 @@ void calibrate_coordinates(int corner, bool use_left_sensor, bool use_left_right
     // double heading = chassis.get_absolute_heading();
     // // bool face
     // if(315 < heading && heading <= 360 || heading < 45) 
-    double left_dist = mm_to_inch(distance_sensorL.get()) + 3.25;
-    double right_dist = mm_to_inch(distance_sensorR.get()) + 3.25;
+    double left_dist = mm_to_inch(distance_sensorL.get()) + distance_sensorL_offset;
+    double right_dist = mm_to_inch(distance_sensorR.get()) + distance_sensorR_offset;
 
     switch(corner){
         case 1:

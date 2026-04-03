@@ -100,32 +100,17 @@ void simple_screen_task(bool rainbow){
     }
     
 		pros::screen::print(TEXT_MEDIUM, 0, "X: %.2f,  Y: %.2f, Heading: %.2f", chassis.get_X_position(), chassis.get_Y_position(), chassis.get_absolute_heading());
+    pros::screen::print(TEXT_MEDIUM, 1, "Pitch: %.2f, Roll: %.2f", chassis.Gyro.get_pitch(), chassis.Gyro.get_roll());
     pros::screen::print(TEXT_MEDIUM, 2, "Drive L pos: %.2f, Drive R pos: %.2f", chassis.DriveL.get_position(), chassis.DriveR.get_position());
 		// pros::screen::print(TEXT_MEDIUM, 2, "Intake temp: down %.2f, mid %.2f, up %.2f", intake_down.get_temperature(), intake_mid.get_temperature(), intake_up.get_temperature());
 		pros::screen::print(TEXT_MEDIUM, 3, "DT L temp: %.2f, %.2f, %.2f", chassis.DriveL.get_temperature(0), chassis.DriveL.get_temperature(1), chassis.DriveL.get_temperature(2));
 		pros::screen::print(TEXT_MEDIUM, 4, "DT R temp: %.2f, %.2f, %.2f", chassis.DriveR.get_temperature(0), chassis.DriveR.get_temperature(1), chassis.DriveR.get_temperature(2));
-		pros::screen::print(TEXT_MEDIUM, 5, "Distance L (mm): %d", distance_sensorL.get());
-		pros::screen::print(TEXT_MEDIUM, 6, "Distance R (mm): %d", distance_sensorR.get());
-    pros::screen::print(TEXT_MEDIUM, 7, "Gyro pitch: %.2f", chassis.Gyro.get_pitch());
-    pros::screen::print(TEXT_MEDIUM, 8, "last_found_index: %d", chassis.last_found_index);
-    pros::screen::print(TEXT_MEDIUM, 9, "drive_max_voltage: %.2f", chassis.drive_max_voltage);
-    // pros::screen::print(TEXT_MEDIUM, 9, "Mid jam time: %d", mid_jam_time);
-    // pros::screen::print(TEXT_MEDIUM, 10, "Unjam attempt time: %d Rest time: %d", unjam_attempt_time, rest_time);
-    // pros::screen::print(TEXT_LARGE_CENTER, 9, "Progress: %d", progress);
+		pros::screen::print(TEXT_MEDIUM, 5, "Distance L (mm): %d, R (mm): %d", distance_sensorL.get(), distance_sensorR.get());
+		pros::screen::print(TEXT_MEDIUM, 6, "DT L Torque (Nm): %.2f, %.2f, %.2f", chassis.DriveL.get_torque(0), chassis.DriveL.get_torque(1), chassis.DriveL.get_torque(2));
+		pros::screen::print(TEXT_MEDIUM, 7, "DT R Torque (Nm): %.2f, %.2f, %.2f", chassis.DriveR.get_torque(0), chassis.DriveR.get_torque(1), chassis.DriveR.get_torque(2));
     
-    // printf("X: %.2f,  Y: %.2f, Heading: %.2f\n", chassis.get_X_position(), chassis.get_Y_position(), chassis.get_absolute_heading());
-		// printf("DT L temp: %.2f, %.2f, %.2f\n", chassis.DriveL.get_temperature(0), chassis.DriveL.get_temperature(1), chassis.DriveL.get_temperature(2));
-		// printf("DT R temp: %.2f, %.2f, %.2f\n", chassis.DriveR.get_temperature(0), chassis.DriveR.get_temperature(1), chassis.DriveR.get_temperature(2));
-		// printf("Distance L (mm): %d\n", distance_sensorL.get());
-		// printf("Distance R (mm): %d\n", distance_sensorR.get());
-    // printf("Gyro pitch: %.2f\n", chassis.Gyro.get_pitch());
-    // printf("last_found_index: %d\n", chassis.last_found_index);
-    // printf("drive_max_voltage: %.2f\n", chassis.drive_max_voltage);
-    // printf("\n");
-    // printf("\n");
-    // printf("\n");
-    
-    printf("last_found_index: %d\n", chassis.last_found_index);
+    float avg_torque = (chassis.DriveL.get_torque(0) + chassis.DriveL.get_torque(1) + chassis.DriveL.get_torque(2) + chassis.DriveR.get_torque(0) + chassis.DriveR.get_torque(1) + chassis.DriveR.get_torque(2)) / 6.0;
+    printf("avg_torque: %.2f\n", avg_torque);
 
     delay(50);
     screen_time += 50;

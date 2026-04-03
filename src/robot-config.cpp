@@ -8,7 +8,7 @@ Rotation sideways_tracker(1);  // I just put a random number here but we dont ha
 MotorGroup leftMotors({-13, -17, -16}, MotorGears::blue); // (order not known) negative port number means reversed
 MotorGroup rightMotors({19, 15, 12}, MotorGears::blue); // (order not known) negative port number means reversed
 
-Motor intake(20, MotorGears::green);
+Motor intake(-20, MotorGears::green);
 Motor outtake(7, MotorGears::green);
 
 adi::DigitalOut claw('F');
@@ -44,7 +44,7 @@ Drive chassis(
     // External ratio, must be in decimal, in the format of input teeth/output teeth.
     // If your motor has an 84-tooth gear and your wheel has a 60-tooth gear, this value will be 1.4.
     // If the motor drives the wheel directly, this value is 1:
-    36/48,
+    48/36, // Changing this from 48/36 to 36/48 is wrong! 36/48 makes odom (x and y values) increment way too slowly. TODO: Figure out why this is.
 
     // Gyro scale, this is what your gyro reads when you spin the robot 360 degrees.
     // For most cases 360 will do fine here, but this scale factor can be very helpful when precision is necessary.
@@ -75,10 +75,10 @@ Drive chassis(
 
 
 void default_constants(){
-  // Each constant set is in the form of (maxVoltage, kP, kI, kD, startI).
-  chassis.set_drive_constants(127, 5.29167, 0, 21.167, 0, 0); // max 127
-  chassis.set_heading_constants(64, 2.54, 0, 10.583, 0); 
-  chassis.set_turn_constants(106, 2.38125, .10583, 17.4625, 15.0); // max 105
+  // Each constant set is in the form of (maxVoltage, kP, kI, kD, startI(, minVoltage)).
+  chassis.set_drive_constants(127, 5.29167, 0, 21.167, 0, 0);
+  chassis.set_heading_constants(64, 2.54, 0, 10.583, 0);
+  chassis.set_turn_constants(106, 2.38125, .10583, 17.4625, 15.0);
   chassis.set_swing_constants(116, 3.704166667, 0.08466667, 21.1666667, 15);
   chassis.set_wall_constants(85, 0.44979167, 0, 0, 0);
 
@@ -141,7 +141,7 @@ lemlib::Chassis chassis_lemlib(
     sensors // odometry sensors
 );
 
-// Lemlib Stuff ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+// LemLib Stuff ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 void init() {
     delay(2500); // wait for imu to calibrate
@@ -149,5 +149,4 @@ void init() {
     static Task screen_task([]() {simple_screen_task(false);}); // This must be called in competition_initialize() or later. Calling this in initialize() doesn't work. 
     // static Task screen_task(map_task);
     // Controller(CONTROLLER_MASTER).rumble("..");
-
 }
