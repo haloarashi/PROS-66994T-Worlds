@@ -11,7 +11,7 @@ void one_center_block_then_score(bool left, bool north);
 void ball_clump(bool left);
 
 int soloupper();
-void sideways_parking_zone_tracking_task(void* far);
+void sideways_parking_zone_tracking_task(bool add_extra_exit_condition);
 extern int progress;
 
 // Created during Skills 82 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
@@ -44,4 +44,4 @@ void calibrate_coordinates(int corner, bool use_left_sensor, bool use_left_right
 
 int sololower();
 
-int get_ball_clump_task_2();
+int ball_clump_shovel_task();

@@ -9,7 +9,7 @@ MotorGroup leftMotors({-13, -17, -16}, MotorGears::blue); // (order not known) n
 MotorGroup rightMotors({19, 15, 12}, MotorGears::blue); // (order not known) negative port number means reversed
 
 Motor intake(-20, MotorGears::green);
-Motor outtake(7, MotorGears::green);
+Motor outtake(-7, MotorGears::green);
 
 adi::DigitalOut claw('F');
 adi::DigitalOut shovel('H');
@@ -75,17 +75,23 @@ Drive chassis(
 
 
 void default_constants(){
-  // Each constant set is in the form of (maxVoltage, kP, kI, kD, startI(, minVoltage)).
-  chassis.set_drive_constants(127, 5.29167, 0, 21.167, 0, 0);
-  chassis.set_heading_constants(64, 2.54, 0, 10.583, 0);
-  chassis.set_turn_constants(106, 2.38125, .10583, 17.4625, 15.0);
-  chassis.set_swing_constants(116, 3.704166667, 0.08466667, 21.1666667, 15);
-  chassis.set_wall_constants(85, 0.44979167, 0, 0, 0);
-
-  // Each exit condition set is in the form of (settle_error, settle_time, timeout).
-  chassis.set_drive_exit_conditions(1.8, 50, 3000);
-  chassis.set_turn_exit_conditions(1.82, 50, 2000);
-  chassis.set_swing_exit_conditions(1, 250, 3000);
+    // Each constant set is in the form of (maxVoltage, kP, kI, kD, startI(, minVoltage)).
+    chassis.set_drive_constants(127, 5.29167, 0, 21.167, 0, 0);
+    // chassis.set_heading_constants(64, 2.54, 0, 10.583, 0);
+    chassis.set_heading_constants(64, 7, 0, 20, 0); 
+    chassis.set_turn_constants(106, 2.38125, .10583, 17.4625, 15.0);
+    chassis.set_swing_constants(127, 3.704166667, 0.08466667, 21.1666667, 15);
+    // chassis.set_wall_constants(85, 0.44979167, 0, 0, 0);
+    chassis.set_wall_constants(127, 0.529166667, 0, 0, 0);
+    
+    // Each exit condition set is in the form of (settle_error, settle_time, timeout).
+    chassis.set_drive_exit_conditions(1.8, 50, 3000);
+    chassis.set_turn_exit_conditions(1.82, 50, 2000);
+    chassis.set_swing_exit_conditions(1.82, 50, 2000);
+    
+    // (min_voltage, early_exit_distance)
+    chassis.set_drive_motion_chain_constants(60, 4);
+    chassis.set_turn_motion_chain_constants(30, 5);
 }
 
 // LemLib Stuff vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv

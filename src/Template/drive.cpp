@@ -61,6 +61,16 @@ void Drive::set_drive_constants(float drive_max_voltage, float drive_kp, float d
   this->drive_min_voltage = drive_min_voltage;
 }
 
+void Drive::set_drive_motion_chain_constants(float motion_chain_drive_min_voltage, float motion_chain_drive_early_exit_range){
+  this->motion_chain_drive_min_voltage = motion_chain_drive_min_voltage;
+  this->motion_chain_drive_early_exit_range = motion_chain_drive_early_exit_range;
+}
+
+void Drive::set_turn_motion_chain_constants(float motion_chain_turn_min_voltage, float motion_chain_turn_early_exit_range){
+  this->motion_chain_turn_min_voltage = motion_chain_turn_min_voltage;
+  this->motion_chain_turn_early_exit_range = motion_chain_turn_early_exit_range;
+}
+
 /**
  * Resets default turn constants.
  * Turning includes turn_to_angle() and turn_to_point().
@@ -236,21 +246,32 @@ void Drive::drive_stop(MotorBrake mode){
  * @param extra_angle_deg Additional angle to add to the desired angle.
  */
 
-void Drive::turn_to_angle(float angle, float extra_angle_deg){
-  turn_to_angle(angle + extra_angle_deg, turn_max_voltage, turn_settle_error, turn_settle_time, turn_timeout, turn_kp, turn_ki, turn_kd, turn_starti);
+void Drive::turn_to_angle(float angle, bool motion_chaining){
+  turn_to_angle(angle, 0, 0, motion_chaining);
 }
 
-void Drive::turn_to_angle(float angle, float turn_max_voltage, float turn_settle_error, float turn_settle_time, float turn_timeout){
-  turn_to_angle(angle, turn_max_voltage, turn_settle_error, turn_settle_time, turn_timeout, turn_kp, turn_ki, turn_kd, turn_starti);
+void Drive::turn_to_angle(float angle, float extra_angle_deg, bool motion_chaining){
+  turn_to_angle(angle, extra_angle_deg, 0, motion_chaining);
 }
 
-void Drive::turn_to_angle(float angle, float turn_max_voltage, float turn_settle_error, float turn_settle_time, float turn_timeout, float turn_kp, float turn_ki, float turn_kd, float turn_starti){
+void Drive::turn_to_angle(float angle, float extra_angle_deg, float extra_drive_voltage, bool motion_chaining){
+  angle += extra_angle_deg;
   PID turnPID(reduce_negative_180_to_180(angle - get_absolute_heading()), turn_kp, turn_ki, turn_kd, turn_starti, turn_settle_error, turn_settle_time, turn_timeout);
   while( !turnPID.is_settled() ){
     float error = reduce_negative_180_to_180(angle - get_absolute_heading());
+
+    if(motion_chaining && fabs(error) < motion_chain_turn_early_exit_range){
+      break;
+    }
+
     float output = turnPID.compute(error);
     output = clamp(output, -turn_max_voltage, turn_max_voltage);
-    drive_with_voltage(output, -output);
+
+    if(motion_chaining){
+      output = clamp_min_voltage(output, motion_chain_turn_min_voltage);
+    }
+
+    drive_with_voltage(output + extra_drive_voltage, -output + extra_drive_voltage);
     delay(10);
   }
 }
@@ -267,23 +288,15 @@ void Drive::turn_to_angle(float angle, float turn_max_voltage, float turn_settle
  * @param heading Desired heading in degrees.
  */
 
-void Drive::drive_distance(float distance){
-  drive_distance(distance, get_absolute_heading(), drive_max_voltage, heading_max_voltage, drive_settle_error, drive_settle_time, drive_timeout, drive_kp, drive_ki, drive_kd, drive_starti, heading_kp, heading_ki, heading_kd, heading_starti);
+void Drive::drive_distance(float distance, bool motion_chaining){
+  drive_distance(distance, 0, motion_chaining, get_absolute_heading());
 }
 
-void Drive::drive_distance(float distance, float heading){
-  drive_distance(distance, heading, drive_max_voltage, heading_max_voltage, drive_settle_error, drive_settle_time, drive_timeout, drive_kp, drive_ki, drive_kd, drive_starti, heading_kp, heading_ki, heading_kd, heading_starti);
+void Drive::drive_distance(float distance, float extra_drive_voltage, bool motion_chaining){
+  drive_distance(distance, extra_drive_voltage, motion_chaining, get_absolute_heading());
 }
 
-void Drive::drive_distance(float distance, float heading, float drive_max_voltage, float heading_max_voltage){
-  drive_distance(distance, heading, drive_max_voltage, heading_max_voltage, drive_settle_error, drive_settle_time, drive_timeout, drive_kp, drive_ki, drive_kd, drive_starti, heading_kp, heading_ki, heading_kd, heading_starti);
-}
-
-void Drive::drive_distance(float distance, float heading, float drive_max_voltage, float heading_max_voltage, float drive_settle_error, float drive_settle_time, float drive_timeout){
-  drive_distance(distance, heading, drive_max_voltage, heading_max_voltage, drive_settle_error, drive_settle_time, drive_timeout, drive_kp, drive_ki, drive_kd, drive_starti, heading_kp, heading_ki, heading_kd, heading_starti);
-}
-
-void Drive::drive_distance(float distance, float heading, float drive_max_voltage, float heading_max_voltage, float drive_settle_error, float drive_settle_time, float drive_timeout, float drive_kp, float drive_ki, float drive_kd, float drive_starti, float heading_kp, float heading_ki, float heading_kd, float heading_starti){
+void Drive::drive_distance(float distance, float extra_drive_voltage, bool motion_chaining, float heading){
   PID drivePID(distance, drive_kp, drive_ki, drive_kd, drive_starti, drive_settle_error, drive_settle_time, drive_timeout);
   PID headingPID(reduce_negative_180_to_180(heading - get_absolute_heading()), heading_kp, heading_ki, heading_kd, heading_starti);
   float start_average_position = (get_left_position_in()+get_right_position_in())/2.0;
@@ -291,6 +304,10 @@ void Drive::drive_distance(float distance, float heading, float drive_max_voltag
   while(drivePID.is_settled() == false){
     average_position = (get_left_position_in()+get_right_position_in())/2.0;
     drive_error = distance+start_average_position-average_position;
+    if(motion_chaining && fabs(drive_error) < motion_chain_drive_early_exit_range){
+      break;
+    }
+
     float heading_error = reduce_negative_180_to_180(heading - get_absolute_heading());
     float drive_output = drivePID.compute(drive_error);
     float heading_output = headingPID.compute(heading_error);
@@ -298,7 +315,11 @@ void Drive::drive_distance(float distance, float heading, float drive_max_voltag
     drive_output = clamp(drive_output, -drive_max_voltage, drive_max_voltage);
     heading_output = clamp(heading_output, -heading_max_voltage, heading_max_voltage);
 
-    drive_with_voltage(drive_output+heading_output, drive_output-heading_output);
+    if(motion_chaining){
+      drive_output = clamp_min_voltage(drive_output, motion_chain_drive_min_voltage);
+    }
+
+    drive_with_voltage(drive_output+heading_output + extra_drive_voltage, drive_output-heading_output + extra_drive_voltage);
 
     delay(10);
   }
@@ -312,36 +333,30 @@ void Drive::drive_distance(float distance, float heading, float drive_max_voltag
  * @param angle Desired angle in degrees.
  */
 
-void Drive::left_swing_to_angle(float angle){
-  left_swing_to_angle(angle, swing_max_voltage, swing_settle_error, swing_settle_time, swing_timeout, swing_kp, swing_ki, swing_kd, swing_starti);
-}
-
-void Drive::left_swing_to_angle(float angle, float swing_max_voltage, float swing_settle_error, float swing_settle_time, float swing_timeout, float swing_kp, float swing_ki, float swing_kd, float swing_starti){
+void Drive::swing_to_angle(float angle, bool move_left, bool motion_chaining){
   PID swingPID(reduce_negative_180_to_180(angle - get_absolute_heading()), swing_kp, swing_ki, swing_kd, swing_starti, swing_settle_error, swing_settle_time, swing_timeout);
   while(swingPID.is_settled() == false){
     float error = reduce_negative_180_to_180(angle - get_absolute_heading());
+    if(motion_chaining && fabs(error) < motion_chain_turn_early_exit_range){
+      break;
+    }
+
     float output = swingPID.compute(error);
     output = clamp(output, -turn_max_voltage, turn_max_voltage);
-    output = clamp_min_voltage(output, swing_min_voltage);
-    DriveL.move(output);
-    brake_with_mode_group(DriveR, MotorBrake::hold);
-    delay(10);
-  }
-}
 
-void Drive::right_swing_to_angle(float angle){
-  right_swing_to_angle(angle, swing_max_voltage, swing_settle_error, swing_settle_time, swing_timeout, swing_kp, swing_ki, swing_kd, swing_starti);
-}
+    if(motion_chaining){
+      output = clamp_min_voltage(output, motion_chain_turn_min_voltage);
+    }
 
-void Drive::right_swing_to_angle(float angle, float swing_max_voltage, float swing_settle_error, float swing_settle_time, float swing_timeout, float swing_kp, float swing_ki, float swing_kd, float swing_starti){
-  PID swingPID(reduce_negative_180_to_180(angle - get_absolute_heading()), swing_kp, swing_ki, swing_kd, swing_starti, swing_settle_error, swing_settle_time, swing_timeout);
-  while(swingPID.is_settled() == false){
-    float error = reduce_negative_180_to_180(angle - get_absolute_heading());
-    float output = swingPID.compute(error);
-    output = clamp(output, -turn_max_voltage, turn_max_voltage);
-    output = clamp_min_voltage(output, swing_min_voltage);
-    DriveR.move(-output);
-    brake_with_mode_group(DriveL, MotorBrake::hold);
+    if(move_left){
+      DriveL.move(output);
+      brake_with_mode_group(DriveR, MotorBrake::hold);
+    }
+    else{
+      DriveR.move(-output);
+      brake_with_mode_group(DriveL, MotorBrake::hold);
+    }
+    
     delay(10);
   }
 }
@@ -388,7 +403,7 @@ void Drive::wall_distance(WallSide direction, float distance, float heading, flo
 
   int rev_constant=1;
   if(distance<0) rev_constant =-1;
-  while(drivePID.is_settled() == false){
+  while(!drivePID.is_settled()){
     average_position = (get_left_position_in()+get_right_position_in())/2.0;
     drive_error = distance+start_average_position-average_position;
     float heading_error = reduce_negative_180_to_180(heading - get_absolute_heading());

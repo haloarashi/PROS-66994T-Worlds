@@ -56,6 +56,7 @@
 #include "auton-routines.h"
 #include "robot-config.h"
 
+extern Task* intake_task;
 
 /**
  * If you find doing pros::Motor() to be tedious and you'd prefer just to do

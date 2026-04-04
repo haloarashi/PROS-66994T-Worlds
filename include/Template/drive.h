@@ -58,6 +58,12 @@ class Drive{
         float drive_kd;
         float drive_starti;
 
+        float motion_chain_drive_min_voltage;
+        float motion_chain_drive_early_exit_range;
+
+        float motion_chain_turn_min_voltage; // also used for swing
+        float motion_chain_turn_early_exit_range; // also used for swing
+
         float drive_settle_error;
         float drive_settle_time;
         float drive_timeout;
@@ -68,7 +74,6 @@ class Drive{
         float heading_kd;
         float heading_starti;
 
-        float swing_min_voltage;
         float swing_max_voltage;
         float swing_kp;
         float swing_ki;
@@ -109,31 +114,22 @@ class Drive{
         void set_heading_constants(float heading_max_voltage, float heading_kp, float heading_ki, float heading_kd, float heading_starti);
         void set_swing_constants(float swing_max_voltage, float swing_kp, float swing_ki, float swing_kd, float swing_starti);
         void set_wall_constants(float wall_max_voltage, float wall_kp, float wall_ki, float wall_kd, float wall_starti);
-        // void set_drive_min_constants(float drive_max_voltage, float drive_kp, float drive_ki, float drive_kd, float drive_starti, float drive_min_voltage);
         void set_turn_exit_conditions(float turn_settle_error, float turn_settle_time, float turn_timeout);
         void set_drive_exit_conditions(float drive_settle_error, float drive_settle_time, float drive_timeout);
         void set_swing_exit_conditions(float swing_settle_error, float swing_settle_time, float swing_timeout);
+        
+        void set_drive_motion_chain_constants(float motion_chain_drive_min_voltage, float motion_chain_drive_early_exit_range);
+        void set_turn_motion_chain_constants(float motion_chain_turn_min_voltage, float motion_chain_turn_early_exit_range);
 
-        void turn_to_angle(float angle, float extra_angle_deg = 0);
-        void turn_to_angle(float angle, float turn_max_voltage, float turn_settle_error, float turn_settle_time, float turn_timeout);
-        void turn_to_angle(float angle, float turn_max_voltage, float turn_settle_error, float turn_settle_time, float turn_timeout, float turn_kp, float turn_ki, float turn_kd, float turn_starti);
+        void turn_to_angle(float angle, bool motion_chaining = false);
+        void turn_to_angle(float angle, float extra_angle_deg, bool motion_chaining = false);
+        void turn_to_angle(float angle, float extra_angle_deg, float extra_drive_voltage, bool motion_chaining = false);
 
-        void drive_distance(float distance);
-        void drive_distance(float distance, float heading);
-        void drive_distance(float distance, float heading, float drive_max_voltage, float heading_max_voltage);
-        void drive_distance(float distance, float heading, float drive_max_voltage, float heading_max_voltage, float drive_settle_error, float drive_settle_time, float drive_timeout);
-        void drive_distance(float distance, float heading, float drive_max_voltage, float heading_max_voltage, float drive_settle_error, float drive_settle_time, float drive_timeout, float drive_kp, float drive_ki, float drive_kd, float drive_starti, float heading_kp, float heading_ki, float heading_kd, float heading_starti);
+        void drive_distance(float distance, bool motion_chaining = false);
+        void drive_distance(float distance, float extra_drive_voltage, bool motion_chaining = false);
+        void drive_distance(float distance, float extra_drive_voltage, bool motion_chaining, float heading);
 
-        void drive_min_distance(float distance);
-        void drive_min_distance(float distance, float heading);
-        void drive_min_distance(float distance, float heading, float drive_max_voltage, float heading_max_voltage);
-        void drive_min_distance(float distance, float heading, float drive_min_voltage);
-        void drive_min_distance(float distance, float heading, float drive_max_voltage, float heading_max_voltage, float drive_settle_error, float drive_settle_time, float drive_timeout, float drive_kp, float drive_ki, float drive_kd, float drive_starti, float heading_kp, float heading_ki, float heading_kd, float heading_starti);
-
-        void left_swing_to_angle(float angle);
-        void left_swing_to_angle(float angle, float swing_max_voltage, float swing_settle_error, float swing_settle_time, float swing_timeout, float swing_kp, float swing_ki, float swing_kd, float swing_starti);
-        void right_swing_to_angle(float angle);
-        void right_swing_to_angle(float angle, float swing_max_voltage, float swing_settle_error, float swing_settle_time, float swing_timeout, float swing_kp, float swing_ki, float swing_kd, float swing_starti);
+        void swing_to_angle(float angle, bool move_left, bool motion_chaining = false);
         
         enum class WallSide{
           LEFT,

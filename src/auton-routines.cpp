@@ -1,9 +1,11 @@
 #include "main.h"
 
 void skills_init(){
-    Task in_fxn(intake_status);
+    if(intake_task == nullptr){
+        intake_task = new Task(intake_status);
+    }
     progress = 0;
-    Task parking_zone_task(sideways_parking_zone_tracking_task, (void*)false);
+    Task parking_zone_task([]{sideways_parking_zone_tracking_task(false);});
     
     // chassis.set_coordinates(29.804, 66.47, 180);
     default_constants();
@@ -22,11 +24,8 @@ void skills_115(){
 
     ball_clump(true);
     default_constants();
-    // chassis.drive_distance(32.5);
-    // chassis.turn_to_point(29.804, 24);
-    // chassis.turn_to_point(chassis.get_X_position(), 24);
-    // shovel.set_value(false);
-
+    chassis.swing_to_angle(217, true, true);
+    chassis.drive_distance(35);
     loader(true, false);
     exit_somewhere_skills(false, 150);
     shovel.set_value(false);
@@ -34,51 +33,50 @@ void skills_115(){
     double left_dist = mm_to_inch(distance_sensorL.get()) + 3.25;
     double dist_from_wall = fabs(left_dist * sin(to_rad(chassis.get_absolute_heading())));
     chassis.set_coordinates(chassis.get_X_position(), dist_from_wall, chassis.get_absolute_heading());
-    // pros::screen::print(TEXT_MEDIUM, 1, "Y adjusted to %.2f", dist_from_wall);
-    // pros::screen::print(TEXT_MEDIUM, 2, "distance %.2f", left_dist);
     
+    //超強佬佬佬佬佬佬
     go_to_other_end_of_long_goal(false, false);
-    score_long_goal(false, false, false);
+    score_long_goal(false, false, true);
     
-    // chassis.turn_settle_error = 1;
-    // chassis.turn_timeout = 1000;
     chassis.turn_to_angle(90);
     default_constants();
-    
     loader_from_goal(false, false);
+    score_long_goal(false, false, true);
     shovel.set_value(false);
-    //超強佬佬佬佬佬佬
-    score_long_goal(false, false, false);
-    delay(1000); // this is too long if we're also doing lower goal
-    exit_somewhere_skills(true, 150, false);
-    intake_task = IntakeTask::LONG_GOAL_OUT;
-    // intake_task = IntakeTask::LONG_GOAL_OUT; // remove all blocks from robot for parking zone
+    intake_state = IntakeTask::LONG_GOAL_OUT; // remove all blocks from robot for parking zone
+   
+	// vvvvvvvv blue parking zone vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 
-    // // ^^^^ first half done ^^^^
-
+    default_constants();
     // chassis.turn_to_point(118, 35);
+    chassis.turn_to_angle(60, false);
+	chassis.drive_with_voltage(127, 127);
+	delay(500);
+    // chassis.swing_to_angle(90, true, false);
+    chassis.swing_to_angle(10, false, true);
     // chassis.drive_settle_error = 6;
     // chassis.drive_to_point(118, 35);
     // chassis.turn_to_angle(0);
 
-    // odomlift.set_value(true);
-    // // pros::screen::print(TEXT_LARGE_CENTER, 1, "AAAA before right_wall");
     // chassis.drive_settle_error = 4;
     // chassis.wall_kp = 0.35;
     // chassis.drive_kp = 6;
-    // chassis.min_right_wall_distance(15, 0, 45, 80);
-    // default_constants();
-    // // pros::screen::print(TEXT_LARGE_CENTER, 1, "BBBB before voltage");
-    // chassis.drive_with_voltage(80, 70);
-    // Task parking_zone_task(sideways_parking_zone_tracking_task, (void*)true); // change this to true for actual skills!
-    // wait_until([](){return progress >= 1;}, 20, 1000);
-    // // pros::screen::print(TEXT_LARGE_CENTER, 1, "CCCC before parking zone");
-    // sideways_parking_zone(false, false);
+    // chassis.wall_distance(chassis.WallSide::RIGHT, 15, 0, 45, 80);
+    default_constants();
+    chassis.drive_with_voltage(70, 70);
+	delay(500); // 200 gets the robot right in front of parking barrier
+	// chassis.drive_with_voltage(-127, -127);
+	// delay(10);
+	// chassis.drive_stop(MotorBrake::hold);
+	// delay(300);
+    Task parking_zone_task([]{sideways_parking_zone_tracking_task(false);}); // maybe use true if necessary
+    wait_until([](){return progress >= 1;}, 20, 1000);
+    sideways_parking_zone(false, false);
 
-    // // ^^^^^^^^ blue parking zone ^^^^^^^^^^^
+    // // ^^^^^^^^ blue parking zone ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
     // one_center_block_then_score(false, true);
-    // intake_task = IntakeTask::LONG_GOAL_OUT;
+    // intake_state = IntakeTask::LONG_GOAL_OUT;
     
     // chassis.set_coordinates(chassis.get_X_position(), chassis.get_Y_position() + 7, chassis.get_absolute_heading());
     chassis.turn_to_point(110.596, 117);
@@ -86,7 +84,7 @@ void skills_115(){
     shovel.set_value(false);
 
     // only needed if not doing lower goal vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-    // intake_task = IntakeTask::LONG_GOAL_OUT;
+    // intake_state = IntakeTask::LONG_GOAL_OUT;
 
     // chassis.drive_to_point(110.596, 117);
     // chassis.turn_to_angle(90);
@@ -100,7 +98,8 @@ void skills_115(){
     // loader_from_goal(false, true);
 
     // only needed if not doing lower goal ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
+    
+    chassis.drive_to_point(100, 116);
     loader(false, true, false);
     exit_somewhere_skills(false, 150);
     shovel.set_value(false);
@@ -119,52 +118,12 @@ void skills_115(){
     score_long_goal(true, true, true);
     delay(1000); // this is too long if we're also doing lower goal
     exit_somewhere_skills(true, 200, false);
-    intake_task = IntakeTask::LONG_GOAL_OUT;
+    intake_state = IntakeTask::LONG_GOAL_OUT;
     
     fwd_park();
-
-    // // ------------------------------------------------------------------
-    // chassis.turn_to_point(12, 106);
-    // chassis.drive_settle_error = 6;
-    // chassis.drive_to_point(12, 106);
-    // chassis.turn_to_angle(270);
-    // chassis.drive_with_voltage(60, 60);
-    // delay(1000);
-    // chassis.turn_to_angle(180);
-
-    // odomlift.set_value(true);
-    // // pros::screen::print(TEXT_LARGE_CENTER, 1, "AAAA before right_wall");
-    // // chassis.drive_settle_error = 4;
-    // // chassis.wall_kp = 0.35;
-    // // chassis.drive_kp = 6;
-    // // chassis.min_right_wall_distance(15, 0, 45, 80);
-    // // default_constants();
-    // // pros::screen::print(TEXT_LARGE_CENTER, 1, "BBBB before voltage");
-    // chassis.drive_with_voltage(80, 70);
-    // Task parking_zone_task(sideways_parking_zone_tracking_task, (void*)true); // change this to true for actual skills!
-    // wait_until([](){return progress >= 1;}, 20, 1000);
-    // // pros::screen::print(TEXT_LARGE_CENTER, 1, "CCCC before parking zone");
-    // // sideways_parking_zone(false, false);
-
-    // int voltage = 85;
-    // chassis.set_coordinates(0, 0, chassis.get_absolute_heading());
-    // odomlift.set_value(true);
-    // intake_task = 1;
-    // chassis.drive_with_voltage(voltage, voltage);
-    // // delay(500);
-    // wait_until([](){return progress >= 3;}, 5, 3000);
-    // delay(1000);
-    // chassis.drive_with_voltage(-35, -35);
-    // delay(1000);
-    // chassis.drive_stop(MotorBrake::brake);
-
-    // // ------------------------------------------------------------------
-
-    // // chassis.drive_stop(MotorBrake::brake);
 }
 
-double measure_tracking_wheel_width()
-{
+double measure_tracking_wheel_width(){
     // double spin_angle = 2.0;
 
     chassis.Fwd_tracker.set_position(0);

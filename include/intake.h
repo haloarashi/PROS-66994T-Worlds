@@ -11,8 +11,6 @@ int intake_status();
 // extern uint32_t rest_time;
 // extern uint32_t rest_start_time;
 
-extern IntakeTask intake_task;
-
 enum class IntakeTask{
     STOP,
     INTAKE,
@@ -21,5 +19,7 @@ enum class IntakeTask{
     UPPER_GOAL_OUT,
     LONG_GOAL_OUT
 };
+
+extern IntakeTask intake_state;
 
 // extern int mid_jam_time;

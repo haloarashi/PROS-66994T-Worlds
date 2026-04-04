@@ -20,18 +20,19 @@ int intake_status(){
     //   mid_jam_time = 0;
     // }
 
-    switch(intake_task){
+    switch(intake_state){
       case IntakeTask::STOP: // stop intake
         brake_with_mode(intake, MotorBrake::brake);
+        brake_with_mode(outtake, MotorBrake::brake);
         break;
 
       case IntakeTask::INTAKE: // start intake
         intake.move(127);
-        brake_with_mode(outtake, MotorBrake::hold);
+        outtake.move(-127);
         break;
 
       case IntakeTask::LONG_GOAL_OUT: // long goal out
-        outtake_lift.set_value(true);
+        outtake_lift.set_value(false);
         intake.move(127);
         outtake.move(127);
         break;
@@ -42,9 +43,9 @@ int intake_status(){
         break;
 
       case IntakeTask::UPPER_GOAL_OUT: // upper goal out
-        outtake_lift.set_value(false);
+        outtake_lift.set_value(true);
         intake.move(127);
-        outtake.move(127);
+        outtake.move(50);
         break;
 
       case IntakeTask::LOWER_GOAL_OUT: // low goal out (slowed)
@@ -53,7 +54,7 @@ int intake_status(){
         break;
     }
 
-    lift.set_value(intake_task == IntakeTask::LOWER_GOAL_OUT || intake_task == IntakeTask::REVERSE);
+    lift.set_value(intake_state == IntakeTask::LOWER_GOAL_OUT || intake_state == IntakeTask::REVERSE);
 
     delay(10);
   }
