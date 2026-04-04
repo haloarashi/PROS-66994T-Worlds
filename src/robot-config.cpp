@@ -91,7 +91,7 @@ void default_constants(){
     
     // (min_voltage, early_exit_distance)
     chassis.set_drive_motion_chain_constants(60, 4);
-    chassis.set_turn_motion_chain_constants(30, 5);
+    chassis.set_turn_motion_chain_constants(50, 5);
 }
 
 // LemLib Stuff vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv

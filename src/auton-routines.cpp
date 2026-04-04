@@ -30,10 +30,6 @@ void skills_115(){
     exit_somewhere_skills(false, 150);
     shovel.set_value(false);
 
-    double left_dist = mm_to_inch(distance_sensorL.get()) + 3.25;
-    double dist_from_wall = fabs(left_dist * sin(to_rad(chassis.get_absolute_heading())));
-    chassis.set_coordinates(chassis.get_X_position(), dist_from_wall, chassis.get_absolute_heading());
-    
     //超強佬佬佬佬佬佬
     go_to_other_end_of_long_goal(false, false);
     score_long_goal(false, false, true);
@@ -47,11 +43,12 @@ void skills_115(){
    
 	// vvvvvvvv blue parking zone vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 
+    chassis.set_coordinates(0, 0, 90);
     default_constants();
     // chassis.turn_to_point(118, 35);
     chassis.turn_to_angle(60, false);
 	chassis.drive_with_voltage(127, 127);
-	delay(500);
+	delay(600);
     // chassis.swing_to_angle(90, true, false);
     chassis.swing_to_angle(10, false, true);
     // chassis.drive_settle_error = 6;
@@ -75,15 +72,7 @@ void skills_115(){
 
     // // ^^^^^^^^ blue parking zone ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-    // one_center_block_then_score(false, true);
-    // intake_state = IntakeTask::LONG_GOAL_OUT;
-    
-    // chassis.set_coordinates(chassis.get_X_position(), chassis.get_Y_position() + 7, chassis.get_absolute_heading());
-    chassis.turn_to_point(110.596, 117);
-    default_constants();
-    shovel.set_value(false);
-
-    // only needed if not doing lower goal vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+    // vvvvvvvvvv only needed if not doing lower goal vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     // intake_state = IntakeTask::LONG_GOAL_OUT;
 
     // chassis.drive_to_point(110.596, 117);
@@ -97,28 +86,34 @@ void skills_115(){
     
     // loader_from_goal(false, true);
 
-    // only needed if not doing lower goal ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    // vvvvvvvvvv only needed if not doing lower goal ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     
-    chassis.drive_to_point(100, 116);
-    loader(false, true, false);
+    chassis.drive_with_voltage(127, 127);
+    delay(200);
+    one_center_block_then_score(false, true);
+
+    default_constants();
+    // chassis.turn_to_angle(220, true);
+    // chassis.swing_to_angle(220, true, true);
+    chassis.drive_distance(-28);
+    intake_state = IntakeTask::INTAKE;
+    chassis.swing_to_angle(180, true, true);
+    chassis.drive_distance(-17);
+    loader(false, true);
     exit_somewhere_skills(false, 150);
     shovel.set_value(false);
-    
+
+    //超強佬佬佬佬佬佬
     go_to_other_end_of_long_goal(true, true);
-    score_long_goal(true, true, false);
+    score_long_goal(true, true, true);
     
-    chassis.turn_settle_error = 1;
-    chassis.turn_timeout = 1000;
     chassis.turn_to_angle(270);
     default_constants();
-    
     loader_from_goal(true, true);
-    shovel.set_value(false);
-    
     score_long_goal(true, true, true);
-    delay(1000); // this is too long if we're also doing lower goal
+    shovel.set_value(false);   
     exit_somewhere_skills(true, 200, false);
-    intake_state = IntakeTask::LONG_GOAL_OUT;
+    intake_state = IntakeTask::LONG_GOAL_OUT; // remove all blocks from robot for parking zone
     
     fwd_park();
 }

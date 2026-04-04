@@ -22,14 +22,12 @@ void competition_initialize() {
 
 ASSET(curveLeft_txt);
 
-void autonomous() { // REMEMBER TO ENTER 
-	chassis.set_coordinates(0, 0, 90);
+void autonomous() {
+	chassis.set_coordinates(0, 0, 0);
 	skills_init();
-	// skills_115();
+	skills_115();
 
-
-
-	chassis.drive_stop(MotorBrake::brake);
+	// chassis.drive_stop(MotorBrake::brake);
 }
 
 void opcontrol() {
