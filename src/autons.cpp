@@ -168,12 +168,12 @@ void one_center_block_then_score(bool left, bool north){
     }
     else{
         shovel.set_value(false);
-        chassis.turn_to_angle(north? 210 : 47);
+        chassis.turn_to_angle(north? 222 : 47); // 210
         // chassis.turn_to_point(80, 78);
         // chassis.turn_to_angle(225);
         // Task lower_task(sololower);
         chassis.drive_with_voltage(127, 127);
-        delay(150);
+        delay(100);
         chassis.drive_with_voltage(45, 45);
         delay(180);
         // chassis.drive_with_voltage(127, 127);
@@ -428,9 +428,9 @@ void sideways_chain_park(){
     drive_long_goal_to_parking_zone(true);
     Task parking_zone_task([]{sideways_parking_zone_tracking_task(false);}); // maybe use true if necessary
     wait_until([](){return progress >= 3;}, 20, 1000);
-    chassis.drive_with_voltage(-15, -15);
+    chassis.drive_with_voltage(25, 25);
     delay(500);
-    chassis.drive_stop(MotorBrake::brake);
+    chassis.drive_stop(MotorBrake::coast);
 }
 
 void fwd_park(){

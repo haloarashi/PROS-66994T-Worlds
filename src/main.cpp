@@ -25,8 +25,7 @@ ASSET(curveLeft_txt);
 void autonomous() {
 	chassis.set_coordinates(0, 0, 0);
 	skills_init();
-	// skills_115();
-	sideways_chain_park();
+	skills_115();
 }
 
 bool last_bt_x = false;

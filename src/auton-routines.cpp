@@ -66,7 +66,7 @@ void skills_115(){
     
     // loader_from_goal(false, true);
 
-    // vvvvvvvvvv only needed if not doing lower goal ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    // ^^^^^^^^^^ only needed if not doing lower goal ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     
     chassis.drive_with_voltage(127, 127);
     delay(200);
@@ -75,7 +75,7 @@ void skills_115(){
     default_constants();
     // chassis.turn_to_angle(220, true);
     // chassis.swing_to_angle(220, true, true);
-    chassis.drive_distance(-28);
+    chassis.drive_distance(-28, true);
     intake_state = IntakeTask::INTAKE;
     chassis.swing_to_angle(180, true, true);
     chassis.drive_distance(-17);
