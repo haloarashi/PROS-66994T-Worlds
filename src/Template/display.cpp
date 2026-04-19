@@ -108,6 +108,8 @@ void simple_screen_task(bool rainbow){
 		pros::screen::print(TEXT_MEDIUM, 6, "Distance L (mm): %d, R (mm): %d", distance_sensorL.get(), distance_sensorR.get());
 		pros::screen::print(TEXT_MEDIUM, 7, "DT L Torque (Nm): %.2f, %.2f, %.2f", chassis.DriveL.get_torque(0), chassis.DriveL.get_torque(1), chassis.DriveL.get_torque(2));
 		pros::screen::print(TEXT_MEDIUM, 8, "DT R Torque (Nm): %.2f, %.2f, %.2f", chassis.DriveR.get_torque(0), chassis.DriveR.get_torque(1), chassis.DriveR.get_torque(2));
+		pros::screen::print(TEXT_MEDIUM, 8, "DT L Voltage (mV): %d, %d, %d", chassis.DriveL.get_voltage(0), chassis.DriveL.get_voltage(1), chassis.DriveL.get_voltage(2));
+		pros::screen::print(TEXT_MEDIUM, 8, "DT R Voltage (mV): %d, %d, %d", chassis.DriveR.get_voltage(0), chassis.DriveR.get_voltage(1), chassis.DriveR.get_voltage(2));
 
     pros::screen::print(TEXT_LARGE_CENTER, 10, "progress: %d", progress);
     

@@ -25,7 +25,7 @@ void skills_115(){
     ball_clump(true);
     default_constants();
     chassis.swing_to_angle(217, true, true);
-    chassis.drive_distance(35);
+    chassis.drive_distance(34);
     loader(true, false);
     exit_somewhere_skills(false, 150);
     shovel.set_value(false);
@@ -43,29 +43,9 @@ void skills_115(){
    
 	// vvvvvvvv blue parking zone vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 
-    chassis.set_coordinates(0, 0, 90);
-    default_constants();
-    // chassis.turn_to_point(118, 35);
-    chassis.turn_to_angle(60, false);
-	chassis.drive_with_voltage(127, 127);
-	delay(600);
-    // chassis.swing_to_angle(90, true, false);
-    chassis.swing_to_angle(10, false, true);
-    // chassis.drive_settle_error = 6;
-    // chassis.drive_to_point(118, 35);
-    // chassis.turn_to_angle(0);
+    // chassis.set_coordinates(0, 0, 90);
+    drive_long_goal_to_parking_zone(false);
 
-    // chassis.drive_settle_error = 4;
-    // chassis.wall_kp = 0.35;
-    // chassis.drive_kp = 6;
-    // chassis.wall_distance(chassis.WallSide::RIGHT, 15, 0, 45, 80);
-    default_constants();
-    chassis.drive_with_voltage(70, 70);
-	delay(500); // 200 gets the robot right in front of parking barrier
-	// chassis.drive_with_voltage(-127, -127);
-	// delay(10);
-	// chassis.drive_stop(MotorBrake::hold);
-	// delay(300);
     Task parking_zone_task([]{sideways_parking_zone_tracking_task(false);}); // maybe use true if necessary
     wait_until([](){return progress >= 1;}, 20, 1000);
     sideways_parking_zone(false, false);
@@ -115,7 +95,8 @@ void skills_115(){
     exit_somewhere_skills(true, 200, false);
     intake_state = IntakeTask::LONG_GOAL_OUT; // remove all blocks from robot for parking zone
     
-    fwd_park();
+    // fwd_park();
+    sideways_chain_park();
 }
 
 double measure_tracking_wheel_width(){

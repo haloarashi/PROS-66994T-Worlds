@@ -45,7 +45,7 @@ int intake_status(){
       case IntakeTask::UPPER_GOAL_OUT: // upper goal out
         outtake_lift.set_value(true);
         intake.move(127);
-        outtake.move(50);
+        outtake.move(65);
         break;
 
       case IntakeTask::LOWER_GOAL_OUT: // low goal out (slowed)

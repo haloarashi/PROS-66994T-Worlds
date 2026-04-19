@@ -136,7 +136,8 @@ class Drive{
           RIGHT
         };
         void wall_distance(WallSide direction, float distance, float heading, float wall_dis_target, float _drive_min_voltage = 0);
-    
+        void wall_distance_condition(std::function<bool()> condition, WallSide direction, float voltage, float heading, float wall_dis_target);
+        void wall_distance_condition(std::function<bool()> condition, int timeout_ms, WallSide direction, float voltage, float heading, float wall_dis_target);
         Odom odom;
         float get_ForwardTracker_position();
         float get_SidewaysTracker_position();

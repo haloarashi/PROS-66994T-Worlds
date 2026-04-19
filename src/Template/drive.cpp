@@ -438,6 +438,47 @@ void Drive::wall_distance(WallSide direction, float distance, float heading, flo
   // drive_max_voltage=drive_min_voltage;
 }
 
+void Drive::wall_distance_condition(std::function<bool()> condition, WallSide direction, float voltage, float heading, float wall_dis_target){
+  wall_distance_condition(condition, 0, direction, voltage, heading, wall_dis_target);
+}
+
+void Drive::wall_distance_condition(std::function<bool()> condition, int timeout_ms, WallSide direction, float voltage, float heading, float wall_dis_target){
+  PID headingPID(reduce_negative_180_to_180(heading - get_absolute_heading()), heading_kp, heading_ki, heading_kd, heading_starti);
+  PID wall_PID(wall_dis_target, 0.42, wall_ki, wall_kd, wall_starti);
+  float start_average_position = (get_left_position_in()+get_right_position_in())/2.0;
+  float average_position = start_average_position;
+  
+  int rev_constant=1;
+  if(voltage<0) rev_constant =-1;
+  while(!condition() && (timeout_ms > 0)){
+    average_position = (get_left_position_in()+get_right_position_in())/2.0;
+    float heading_error = reduce_negative_180_to_180(heading - get_absolute_heading());
+    float heading_output = headingPID.compute(heading_error);
+
+    float wall_distance_error = 0;
+    if(direction == WallSide::LEFT){
+      wall_distance_error = wall_dis_target - distance_sensorL.get();
+    } else {
+      wall_distance_error = wall_dis_target - distance_sensorR.get();
+    }
+
+    float wall_dist_output = wall_PID.compute(wall_distance_error);
+
+    if(direction == WallSide::RIGHT){
+      wall_dist_output = -wall_dist_output;
+    }
+
+    heading_output = clamp(heading_output, -heading_max_voltage, heading_max_voltage);
+    wall_dist_output = clamp(wall_dist_output, -wall_max_voltage, wall_max_voltage);
+
+    drive_with_voltage(left_voltage_scaling(voltage, heading_output+wall_dist_output*rev_constant), right_voltage_scaling(voltage, heading_output+wall_dist_output*rev_constant));    
+    if (timeout_ms > 0) timeout_ms -= 10;
+    delay(10);
+  }
+  // drive_settle_time=150;
+  // drive_max_voltage=drive_min_voltage;
+}
+
 /**
  * Background task for updating the odometry.
  */
@@ -688,19 +729,163 @@ void Drive::turn_to_point(float X_position, float Y_position, float extra_angle_
   }
 }
 
-/**
- * Controls a chassis with left stick throttle and right stick turning.
- * Default deadband is 5.
- */
+// /**
+//  * Controls a chassis with left stick throttle and right stick turning.
+//  * Default deadband is 5.
+//  */
+
+// void Drive::control_arcade(){
+//   // float throttle = deadband(controller(primary).Axis3.value(), 5);
+//   float throttle = deadband(master.get_analog(ANALOG_LEFT_Y), 5);
+  
+//   // float turn = deadband(controller(primary).Axis1.value(), 5);
+//   float turn = deadband(master.get_analog(ANALOG_RIGHT_X), 5);
+//   DriveL.move(to_volt(throttle+turn));
+//   DriveR.move(to_volt(throttle-turn));
+// }
 
 void Drive::control_arcade(){
-  // float throttle = deadband(controller(primary).Axis3.value(), 5);
-  float throttle = deadband(master.get_analog(ANALOG_LEFT_Y), 5);
+  double throttle = 0;
+  double turn = 0;
+  bool bt_y=false , last_bt_y=false, bumper_bt_y=false;
+  bool bt_a=false , last_bt_a=false, bumper_bt_a=false;
+  bool bt_Right=false , last_bt_Right=false, bumper_bt_Right=false;
+  bool bt_R2=false , last_bt_R2=false, bumper_bt_R2=false;
+  bool bt_L2=false , last_bt_L2=false, bumper_bt_L2=false;
+  bool bt_X=false , last_bt_X=false, bumper_bt_X=false;
+  bool bt_up=false , last_bt_up=false, bumper_bt_up=false;
+  bool outtake_wait = false;
+  outtake_lift.set_value(false);
+  claw.set_value(true);
+  // descore.set_value(true);
+  shovel.set_value(false);
+  // roof.set_value(false);
+  // Task in_fxn(intake_status);
+  chassis.drive_stop(MotorBrake::brake);
+
+  while(1){
+  throttle = master.get_analog(ANALOG_LEFT_Y);
+  turn = master.get_analog(ANALOG_RIGHT_X);
   
-  // float turn = deadband(controller(primary).Axis1.value(), 5);
-  float turn = deadband(master.get_analog(ANALOG_RIGHT_X), 5);
-  DriveL.move(to_volt(throttle+turn));
-  DriveR.move(to_volt(throttle-turn));
+  if (throttle == 0 && turn == 0) {
+    DriveL.brake();
+    DriveR.brake();
+} else {
+    DriveL.move(throttle + turn);
+    DriveR.move(throttle - turn);
+}
+
+  //deadband
+    if(fabs(throttle)<5){
+      throttle = 0;
+    }
+    if(fabs(turn)<5){
+      turn = 0;
+    }
+    if(fabs(turn)>5){
+      chassis.DriveL.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+      chassis.DriveR.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE); 
+    }
+    else if(fabs(throttle)>5){
+      chassis.DriveL.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+      chassis.DriveR.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+    }
+
+    //set bt
+    bt_y = master.get_digital(DIGITAL_Y);
+    if(!bt_y and last_bt_y){
+      bumper_bt_y = !bumper_bt_y;
+      }
+      bt_a = master.get_digital(DIGITAL_A);
+    if(!bt_a and last_bt_a){
+      bumper_bt_a = !bumper_bt_a;
+      }
+    bt_Right = master.get_digital(DIGITAL_RIGHT);
+    if(!bt_Right and last_bt_Right){
+      bumper_bt_Right = !bumper_bt_Right;
+      }
+    bt_R2 = master.get_digital(DIGITAL_R2);
+    if(!bt_R2 and last_bt_R2){
+      bumper_bt_R2 = !bumper_bt_R2;
+      }
+    bt_L2 = master.get_digital(DIGITAL_L2);
+    if(!bt_L2 and last_bt_L2){
+      bumper_bt_L2 = !bumper_bt_L2;
+      }
+    bt_X = master.get_digital(DIGITAL_X);
+    if(!bt_X and last_bt_X){
+      bumper_bt_X = !bumper_bt_X;
+      }
+    bt_up = master.get_digital(DIGITAL_UP);
+    if(!bt_up and last_bt_up){
+      bumper_bt_up = !bumper_bt_up;
+      }
+
+      if(master.get_digital(DIGITAL_R1)){
+			intake_state = IntakeTask::INTAKE;
+		}
+		else if(master.get_digital(DIGITAL_L2)){
+			intake_state = IntakeTask::UPPER_GOAL_OUT;
+		}
+		else if(master.get_digital(DIGITAL_Y)){
+			intake_state = IntakeTask::LOWER_GOAL_OUT;
+		}
+		else{
+			intake_state = IntakeTask::STOP;
+		}
+
+
+    //bt
+    shovel.set_value(bumper_bt_X);
+    last_bt_X = bt_X;
+
+    // roof.set_value(!bumper_bt_Right);
+    last_bt_Right = bt_Right;
+
+
+
+
+      
+    // descore.set_value(bumper_bt_a);
+    last_bt_a = bt_a;
+
+    claw.set_value(!bt_R2);
+
+
+    // //intake
+    // if(master.get_digital(DIGITAL_R1)){
+    //   intake_state = IntakeTask::INTAKE;
+    //   outtake_lift.set_value(false);
+    // }
+    // else if(master.get_digital(DIGITAL_Y)){
+    //   intake_state = IntakeTask::REVERSE;
+    //   lift.set_value(true);
+    // }
+    // // else if(master.get_digital(DIGITAL_Y)){
+    //   //   intake_state = IntakeTask::LOWER_GOAL_OUT_AUTO;
+    //   //   lift.set_value(true);
+    //   // } //for skill
+    //   else if(master.get_digital(DIGITAL_L1)){
+    //     intake_state = IntakeTask::LONG_GOAL_OUT;
+    //     outtake_lift.set_value(false);
+    //   }
+    //   else if(master.get_digital(DIGITAL_L2)){
+    //     intake_state = IntakeTask::UPPER_GOAL_OUT;
+    //     outtake_end_time = pros::millis() + 1000;
+    // }
+    // // else if(master.get_digital(DIGITAL_L2)){
+    // //   intake_state = IntakeTask::UPPER_GOAL_OUT_AUTO;
+    // // } //skill
+    // else{
+    //   intake_state = IntakeTask::STOP;
+    //   lift.set_value(false);
+    //   if(last_bt_L2){
+    //     start_outtake(1000);
+    //   }
+    // }
+    // bool outtake_lift_state = (pros::millis() < outtake_end_time);
+    // outtake_lift.set_value(outtake_lift_state);
+  }
 }
 
 // /**

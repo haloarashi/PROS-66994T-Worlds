@@ -18,7 +18,9 @@ extern int progress;
 
 int longgoal();
 
+void drive_long_goal_to_parking_zone(bool red);
 void park();
+void sideways_chain_park();
 void fwd_park();
 
 void loader(bool left, bool north, bool keep_intake_running = true);

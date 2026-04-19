@@ -25,10 +25,12 @@ ASSET(curveLeft_txt);
 void autonomous() {
 	chassis.set_coordinates(0, 0, 0);
 	skills_init();
-	skills_115();
-
-	// chassis.drive_stop(MotorBrake::brake);
+	// skills_115();
+	sideways_chain_park();
 }
+
+bool last_bt_x = false;
+bool bt_x = false;
 
 void opcontrol() {
 	if(intake_task == nullptr){
@@ -43,20 +45,5 @@ void opcontrol() {
 	// inertial.tare_euler(); // idk the difference between this and inertial.tare(). Both works. Does not work if called in competition_initialize() or disabled() for some reason. 
 	while (true) {
 		chassis.control_arcade();
-
-		if(master.get_digital(DIGITAL_R1)){
-			intake_state = IntakeTask::INTAKE;
-		}
-		else if(master.get_digital(DIGITAL_L2)){
-			intake_state = IntakeTask::UPPER_GOAL_OUT;
-		}
-		else if(master.get_digital(DIGITAL_Y)){
-			intake_state = IntakeTask::LOWER_GOAL_OUT;
-		}
-		else{
-			intake_state = IntakeTask::STOP;
-		}
-
-		delay(10);
 	}
 }
