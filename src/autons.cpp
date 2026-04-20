@@ -65,11 +65,12 @@ void sideways_parking_zone(bool left, bool red){
 
     chassis.turn_to_angle(facing_north? 0 : 180); // change this if coming from the other side
 
-    chassis.drive_with_voltage(-40, -40);
-    delay(200); // delay to ensure robot has started driving backwards
+    // chassis.drive_with_voltage(-40, -40);
+    // delay(200);
 
     float heading = left == red? 0 : 180;
-    
+    chassis.wall_distance_condition([](){return false;}, 500, left? chassis.WallSide::LEFT : chassis.WallSide::RIGHT, -40, heading, left? 130 : 100); // delay to ensure robot has started driving backwards
+
     chassis.wall_distance_condition([](){
         float avg_torque = (chassis.DriveL.get_torque(0) + chassis.DriveL.get_torque(1) + chassis.DriveL.get_torque(2) 
                           + chassis.DriveR.get_torque(0) + chassis.DriveR.get_torque(1) + chassis.DriveR.get_torque(2)) / 6.0;
@@ -140,11 +141,11 @@ void one_center_block_then_score(bool left, bool north){
     default_constants();
     intake_state = IntakeTask::INTAKE;
     // chassis.turn_to_point(left? 43.5 : 95, north? 92 : 50.4); // center block // 47, 93, 90, 50.4
-    chassis.turn_to_angle(left? 95 : 256);
+    chassis.turn_to_angle(left? 95 : 265);
     // delay(100);
     // chassis.drive_max_voltage = 50;
     // chassis.drive_to_point(left? 43.5 : 95, left? 92 : 50.4); // center block // 47, 93, 90, 50.4
-    chassis.drive_distance(50);
+    chassis.drive_distance(left? 50 : 40);
     // default_constants();
     
     bool upper = left == north;
@@ -168,20 +169,20 @@ void one_center_block_then_score(bool left, bool north){
     }
     else{
         shovel.set_value(false);
-        chassis.turn_to_angle(north? 222 : 47); // 210
+        chassis.turn_to_angle(north? 227 : 47); // 210
         // chassis.turn_to_point(80, 78);
         // chassis.turn_to_angle(225);
         // Task lower_task(sololower);
         chassis.drive_with_voltage(127, 127);
-        delay(100);
-        chassis.drive_with_voltage(45, 45);
-        delay(180);
+        delay(280);
+        chassis.drive_with_voltage(45, 45) ;
+        delay(210);
         // chassis.drive_with_voltage(127, 127);
         // delay(50);
         chassis.turn_timeout = 1000;
         chassis.motion_chain_turn_early_exit_range = 10;
         chassis.motion_chain_turn_min_voltage = 30;
-        chassis.turn_to_angle(225, 0, 0, true); // extra 30.0f
+        // chassis.turn_to_angle(225, 0, 0, true); // extra 30.0f
         default_constants();
         intake_state = IntakeTask::LOWER_GOAL_OUT;
     }
@@ -322,13 +323,13 @@ void go_to_other_end_of_long_goal(bool target_is_left, bool north){
     // double y_goal = north? 116.5 : 22;//113 : 30
 
     default_constants();
-    chassis.turn_to_angle(north? 0 : 180);
+    chassis.turn_to_angle(north? 0 : 180, true);
     // chassis.drive_to_point(chassis.get_X_position(), y_intermediate);
     chassis.drive_settle_error = 3;
     chassis.drive_timeout = 1200;
     chassis.drive_distance(14.5);
     default_constants();
-    chassis.turn_to_angle(target_is_left? 273 : 93);
+    chassis.turn_to_angle(target_is_left? 273 : 93, true);
     // chassis.pid_swing_set(RIGHT_SWING, target_is_left? 270 : 90, TURN_SPEED); // Northeast and southwest are right. The other two corners are left. ;
     // task slow_task;
     if((target_is_left && !north) || (!target_is_left && north)){
@@ -336,19 +337,14 @@ void go_to_other_end_of_long_goal(bool target_is_left, bool north){
         // wait(500, msec);
         // slow_task = task(wait_then_slow_down);
         chassis.wall_distance(chassis.WallSide::LEFT, 97, target_is_left? 270 : 90, 145, 40);
-        // calibrate_coordinates(north? 4 : 2, true, false);
-        chassis.turn_to_angle(north? 180 : 0);
-        // calibrate_coordinates(north? 4 : 2, true, true);
     }
     else{
         // chassis.drive_with_voltage(127, 90);
         // wait(500, msec);
         // slow_task = task(wait_then_slow_down);
         chassis.wall_distance(chassis.WallSide::RIGHT, 101, target_is_left? 270 : 90, 100, 60);
-        // calibrate_coordinates(north? 1 : 3, false, false);
-        chassis.turn_to_angle(north? 180 : 0);
-        // calibrate_coordinates(north? 1 : 3, false, true);
     }
+    chassis.turn_to_angle(north? 180 : 0, true);
     // slow_task.suspend();
     // default_constants();
 
@@ -387,12 +383,13 @@ void score_long_goal(bool left, bool north, bool far){
         chassis.wall_distance(chassis.WallSide::RIGHT, far? -21 : -30, left? 270 : 90, 545, 70);
     }
 
+    intake_state = IntakeTask::INTAKE_REV;
     chassis.drive_with_voltage(-70, -70);
-    delay(80);
+    delay(100);
     intake_state = IntakeTask::LONG_GOAL_OUT;
     delay(500);
     // chassis.drive_stop(MotorBrake::brake);
-    chassis.drive_with_voltage(-45, -45);
+    chassis.drive_with_voltage(-15, -15);
     delay(1200);
     default_constants();
     // outtaketask.suspend();

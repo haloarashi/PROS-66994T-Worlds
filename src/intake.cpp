@@ -37,7 +37,7 @@ int intake_status(){
         outtake.move(127);
         break;
 
-      case IntakeTask::REVERSE: // rev intake
+      case IntakeTask::REVERSE:
         intake.move(-127);
         outtake.move(-127);
         break;
@@ -51,6 +51,10 @@ int intake_status(){
       case IntakeTask::LOWER_GOAL_OUT: // low goal out (slowed)
         intake.move(-75);
         outtake.move(-127);
+        break;
+      
+      case IntakeTask::INTAKE_REV:
+        intake.move(-127);
         break;
     }
 

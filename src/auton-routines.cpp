@@ -22,6 +22,7 @@ void skills_115(){
     delay(200);
     one_center_block_then_score(true, true);
 
+    intake_state = IntakeTask::LONG_GOAL_OUT;
     ball_clump(true);
     default_constants();
     chassis.swing_to_angle(217, true, true);
@@ -68,15 +69,13 @@ void skills_115(){
 
     // ^^^^^^^^^^ only needed if not doing lower goal ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     
-    chassis.drive_with_voltage(127, 127);
+    chassis.drive_with_voltage(40, 40);
     delay(200);
     one_center_block_then_score(false, true);
 
     default_constants();
-    // chassis.turn_to_angle(220, true);
-    // chassis.swing_to_angle(220, true, true);
+    intake_state = IntakeTask::LONG_GOAL_OUT;
     chassis.drive_distance(-28, true);
-    intake_state = IntakeTask::INTAKE;
     chassis.swing_to_angle(180, true, true);
     chassis.drive_distance(-17);
     loader(false, true);
