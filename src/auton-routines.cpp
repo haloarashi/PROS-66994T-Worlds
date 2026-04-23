@@ -14,16 +14,17 @@ void skills_init(){
 }
 
 void skills_115(){
-    // chassis.set_coordinates(0, 0, 180);
+    chassis.set_coordinates(0, 0, 0);
     // set_coordinates_start(false, false);
 
     sideways_parking_zone(true, true);
-    chassis.drive_with_voltage(127, 127);
-    delay(200);
+    // chassis.drive_with_voltage(127, 127);
+    // delay(200);
+    chassis.drive_distance(20);
     one_center_block_then_score(true, true);
 
     intake_state = IntakeTask::LONG_GOAL_OUT;
-    ball_clump(true);
+    ball_clump(true, false);
     default_constants();
     chassis.swing_to_angle(217, true, true);
     chassis.drive_distance(34);
@@ -69,16 +70,29 @@ void skills_115(){
 
     // ^^^^^^^^^^ only needed if not doing lower goal ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     
-    chassis.drive_with_voltage(40, 40);
-    delay(200);
-    one_center_block_then_score(false, true);
+    // -----------------------------------------------------------------------
+    // chassis.drive_distance(20);
+    // one_center_block_then_score(false, true); // lower goal
 
-    default_constants();
-    intake_state = IntakeTask::LONG_GOAL_OUT;
-    chassis.drive_distance(-28, true);
-    chassis.swing_to_angle(180, true, true);
-    chassis.drive_distance(-17);
-    loader(false, true);
+    // default_constants();
+    
+    // chassis.turn_timeout = 1000;
+    // chassis.motion_chain_turn_early_exit_range = 10;
+    // chassis.motion_chain_turn_min_voltage = 30;
+    // chassis.turn_to_angle(250, 0, 0, true);
+    // default_constants();
+    // intake_state = IntakeTask::LONG_GOAL_OUT;
+
+    // chassis.drive_distance(-22, true);
+    // chassis.swing_to_angle(180, true, true);
+    // chassis.drive_distance(-17);
+    //--------------------------------------------------------------------------------
+    chassis.turn_to_angle(330);
+    chassis.drive_distance(38);
+    score_long_goal(false, true, false);
+    loader_from_goal(false, true);
+
+    // loader(false, true);
     exit_somewhere_skills(false, 150);
     shovel.set_value(false);
 
@@ -91,7 +105,8 @@ void skills_115(){
     loader_from_goal(true, true);
     score_long_goal(true, true, true);
     shovel.set_value(false);   
-    exit_somewhere_skills(true, 200, false);
+    // exit_somewhere_skills(true, 200, false);
+    // chassis.drive_distance(8);
     intake_state = IntakeTask::LONG_GOAL_OUT; // remove all blocks from robot for parking zone
     
     // fwd_park();

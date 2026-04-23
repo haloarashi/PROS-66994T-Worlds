@@ -46,6 +46,7 @@
 #include "Template/pure-pursuit/point.h"
 #include "Template/pure-pursuit/curve-point.h"
 #include "Template/display.h"
+#include "Template/auton-selector.h"
 #include "Template/util.h"
 #include "Template/pure-pursuit/custom-math.h"
 #include "Template/drive.h"

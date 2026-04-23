@@ -11,11 +11,12 @@ MotorGroup rightMotors({19, 15, 12}, MotorGears::blue); // (order not known) neg
 Motor intake(-20, MotorGears::green);
 Motor outtake(-7, MotorGears::green);
 
-adi::DigitalOut claw('F');
-adi::DigitalOut shovel('H');
+adi::DigitalOut roof('C');
 adi::DigitalOut lift('D');
-adi::DigitalOut upper('G');
 adi::DigitalOut outtake_lift('E');
+adi::DigitalOut claw('F');
+adi::DigitalOut upper_descore('G');
+adi::DigitalOut shovel('H');
 
 Distance distance_sensorL(11);
 Distance distance_sensorR(6);

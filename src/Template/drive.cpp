@@ -827,6 +827,9 @@ void Drive::control_arcade(){
 		else if(master.get_digital(DIGITAL_L2)){
 			intake_state = IntakeTask::UPPER_GOAL_OUT;
 		}
+		else if(master.get_digital(DIGITAL_L1)){
+			intake_state = IntakeTask::LONG_GOAL_OUT;
+		}
 		else if(master.get_digital(DIGITAL_Y)){
 			intake_state = IntakeTask::LOWER_GOAL_OUT;
 		}
@@ -839,18 +842,13 @@ void Drive::control_arcade(){
     shovel.set_value(bumper_bt_X);
     last_bt_X = bt_X;
 
-    // roof.set_value(!bumper_bt_Right);
+    roof.set_value(!bumper_bt_Right);
     last_bt_Right = bt_Right;
-
-
-
-
       
-    // descore.set_value(bumper_bt_a);
+    upper_descore.set_value(bumper_bt_a);
     last_bt_a = bt_a;
 
     claw.set_value(!bt_R2);
-
 
     // //intake
     // if(master.get_digital(DIGITAL_R1)){

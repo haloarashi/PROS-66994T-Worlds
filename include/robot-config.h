@@ -15,11 +15,12 @@ extern MotorGroup rightMotors;
 extern Motor intake;
 extern Motor outtake;
 
-extern adi::DigitalOut claw;
-extern adi::DigitalOut shovel;
+extern adi::DigitalOut roof;
 extern adi::DigitalOut lift;
-extern adi::DigitalOut upper;
 extern adi::DigitalOut outtake_lift;
+extern adi::DigitalOut claw;
+extern adi::DigitalOut upper_descore;
+extern adi::DigitalOut shovel;
 
 extern Distance distance_sensorL;
 extern Distance distance_sensorR;

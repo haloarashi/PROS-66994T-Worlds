@@ -1,6 +1,6 @@
 #include "main.h"
 
-uint32_t hsv_to_rgb(float h, float s, float v, float time) {
+uint32_t hsv_to_rgb(float h, float s, float v) {
     int i = int(h / 60) % 6;
     float f = h / 60 - i;
     float p = v * (1 - s);
@@ -81,7 +81,7 @@ void simple_screen_task(bool rainbow){
         pros::screen::set_pen(pros::c::COLOR_BLACK);
         pros::screen::set_eraser(pros::c::COLOR_BLACK);
         pros::screen::fill_rect(1,1,480,240);
-        pros::screen::set_pen(rainbow? hsv_to_rgb(hue, 1, 1, screen_time) : pros::c::COLOR_WHITE);
+        pros::screen::set_pen(rainbow? hsv_to_rgb(hue, 1, 1) : pros::c::COLOR_WHITE);
         break;
     }
 

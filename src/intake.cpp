@@ -48,8 +48,19 @@ int intake_status(){
         outtake.move(65);
         break;
 
+      case IntakeTask::UPPER_GOAL_OUT_SLOWER: // upper goal out
+        outtake_lift.set_value(true);
+        intake.move(127);
+        outtake.move(55);
+        break;
+
       case IntakeTask::LOWER_GOAL_OUT: // low goal out (slowed)
-        intake.move(-75);
+        intake.move(-60);
+        outtake.move(-127);
+        break;
+      
+      case IntakeTask::LOWER_GOAL_OUT_SLOWER: // low goal out (even more slowed)
+        intake.move(-55);
         outtake.move(-127);
         break;
       

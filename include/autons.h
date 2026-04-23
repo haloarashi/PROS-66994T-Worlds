@@ -8,7 +8,7 @@ void square(float side_length);
 void red_parking_zone();
 void sideways_parking_zone(bool left, bool red);
 void one_center_block_then_score(bool left, bool north);
-void ball_clump(bool left);
+void ball_clump(bool left, bool intake = true);
 
 int soloupper();
 void sideways_parking_zone_tracking_task(bool add_extra_exit_condition);

@@ -16,7 +16,9 @@ enum class IntakeTask{
     INTAKE,
     REVERSE,
     LOWER_GOAL_OUT,
+    LOWER_GOAL_OUT_SLOWER,
     UPPER_GOAL_OUT,
+    UPPER_GOAL_OUT_SLOWER,
     LONG_GOAL_OUT, 
     INTAKE_REV
 };

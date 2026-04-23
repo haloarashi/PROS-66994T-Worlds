@@ -25,34 +25,7 @@ ASSET(curveLeft_txt);
 void autonomous() {
 	chassis.set_coordinates(0, 0, 0);
 	skills_init();
-	// skills_115();
-	chassis.drive_with_voltage(80, 80);
-    delay(200);
-    one_center_block_then_score(false, true);
-
-    default_constants();
-    intake_state = IntakeTask::LONG_GOAL_OUT;
-    chassis.drive_distance(-28, true);
-    chassis.swing_to_angle(180, true, true);
-    chassis.drive_distance(-17);
-    loader(false, true);
-    exit_somewhere_skills(false, 150);
-    shovel.set_value(false);
-
-    //超強佬佬佬佬佬佬
-    go_to_other_end_of_long_goal(true, true);
-    score_long_goal(true, true, true);
-    
-    chassis.turn_to_angle(270);
-    default_constants();
-    loader_from_goal(true, true);
-    score_long_goal(true, true, true);
-    shovel.set_value(false);   
-    exit_somewhere_skills(true, 200, false);
-    intake_state = IntakeTask::LONG_GOAL_OUT; // remove all blocks from robot for parking zone
-    
-    // fwd_park();
-    sideways_chain_park();
+	skills_115();
 }
 
 bool last_bt_x = false;
